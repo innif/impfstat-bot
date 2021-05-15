@@ -10,7 +10,7 @@ data_grabber = DataGrabber()
 harry_plotter = Plotter(data_grabber)
 mail_man = MessageGenerator(data_grabber)
 
-strings = util.get_conf_file("strings.json")
+strings = util.read_json_file("strings.json")
 
 
 def send_plot(update: Update, context: CallbackContext, plot_type: str):

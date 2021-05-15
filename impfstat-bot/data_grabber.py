@@ -9,11 +9,11 @@ import util
 
 class DataGrabber:
     def __init__(self):
-        self.conf = util.get_conf_file()
+        self.conf = util.read_json_file()
         self.doses_diff_avg: dict = {}
         self.last_update = 0
-        self.data_path = util.get_resource_file_path(self.conf["data_filename"], "data")
-        self.url = self.conf["data-url"]
+        self.data_path = util.get_resource_file_path(self.conf["data-filename"], "data")
+        self.data_update_info_path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
         self.data: dict = {}
         self.newest_data_line: dict = {}
         self.doses_total: dict = {}
@@ -54,14 +54,19 @@ class DataGrabber:
             self.doses_by_institution_avg[key] = [sum(self.doses_by_institution_diff[key][i - 7:i]) / 7 for i in range(self.data_len)]
 
     def _get_vaccination_data(self):
-        if os.path.exists(self.data_path):
-            file_age = time.time() - os.path.getmtime(self.data_path)
+        if os.path.exists(self.data_path) and os.path.exists(self.data_update_info_path):
+            file1_age = time.time() - os.path.getmtime(self.data_path)
+            file2_age = time.time() - os.path.getmtime(self.data_update_info_path)
+            file_age = max(file1_age, file2_age)
         else:
             file_age = float("inf")
         if file_age > (60 * 60):  # wenn Datei älter als eine Stunde ist...
-            vacc_file = requests.get(self.url)
+            vacc_file = requests.get(self.conf["data-url"])
             with open(self.data_path, 'wb') as f:
                 f.write(vacc_file.content)
+            update_info_file = requests.get(self.conf["data-update-info-url"])
+            with open(self.data_update_info_path, 'wb') as f:
+                f.write(update_info_file.content)
         self.data = {}
         titles = []
         with open(self.data_path) as f:

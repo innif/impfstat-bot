@@ -1,11 +1,12 @@
 import util
 from data_grabber import DataGrabber
 
-consts = util.get_conf_file("constants.json")
-strings = util.get_conf_file("strings.json")
+consts = util.read_json_file("constants.json")
+strings = util.read_json_file("strings.json")
+conf = util.read_json_file()
 
 summarize_ids = [
-    ('date', strings['descriptor-date'], util.date),
+    # ('date', strings['descriptor-date'], util.date),
     ('dosen_kumulativ', strings['descriptor-dosen_kumulativ'], util.to_mio),
     ('dosen_differenz_zum_vortag', strings['descriptor-dosen_differenz_zum_vortag'], util.dec_points),
     ('impf_quote_erst', strings['descriptor-impf_quote_erst'], util.to_percent),
@@ -32,10 +33,11 @@ class MessageGenerator:
     def sumarize(self) -> str:
         self.data_handler.update()
         data = self.data_handler.newest_data_line
-        out = ""
+        file_name = conf["data-update-info-filename"]
+        update_info = util.read_json_file(file_name, folder="data")
+        out = strings['descriptor-date'].format(util.date(update_info["vaccinationsLastUpdated"]))
         for id, descr, convert in summarize_ids:
             out += descr.format(convert(data[id]))
-            out += "\n"
         return out
 
     def help(self, command_list) -> str:
