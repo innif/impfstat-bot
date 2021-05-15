@@ -24,9 +24,14 @@ def log(update: Update, context: CallbackContext, tag="MSG"):
     try:
         f = get_resource_file("log.txt", "logs", "a")
         f.write("{}\t".format(tag))
-        f.write("{}\t{}\t{}\t###\tCHAT:{}\tMESSAGE:{}\n".format(
-            update.message.date, update.message.chat.username, update.message.text, update.effective_chat,
-            update.effective_message))
+        if update is not None:
+            f.write("{}\t{}\t{}\t###\tCHAT:{}\tMESSAGE:{}\n".format(
+                update.message.date, update.message.chat.username, update.message.text, update.effective_chat,
+                update.effective_message))
+        else:
+            f.write("\n")
+    except:
+        pass
     finally:
         if f is not None:
             f.close()

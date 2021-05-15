@@ -23,7 +23,7 @@ def send_text(update: Update, context: CallbackContext, text: str) -> None:
 
 
 def error_handler(update, context: CallbackContext):
-    util.log(update, context, "ERR")
+    util.log(None, context, "ERR")
 
 
 def send_avg(update: Update, context: CallbackContext) -> None:
