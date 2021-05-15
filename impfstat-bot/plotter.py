@@ -6,10 +6,17 @@ import numpy as np
 import util
 from data_grabber import DataGrabber
 
+conf = util.get_conf_file()
+strings = util.get_conf_file("strings.json")
 
-def gen_stacked_plot(content, labels, n_samples, n_labels, title, path, x_label='Datum', y_label='Impfdosen', ):
+
+def gen_stacked_plot(content, labels, n_samples, n_labels, title, path, x_label=None, y_label=None):
+    if x_label is None:
+        x_label = strings["plot-x-label"]
+    if y_label is None:
+        y_label = strings["plot-y-label"]
     plt.ioff()
-    plt.style.use("seaborn-whitegrid")
+    plt.style.use(conf["plt-style"])
     fig, ax = plt.subplots()
     ax.stackplot(labels, content.values(), labels=content.keys())
     ax.legend(loc='upper left')
@@ -26,15 +33,12 @@ class Plotter:
     def __init__(self, data_grabber: DataGrabber):
         self.data_grabber: DataGrabber = data_grabber
         self.types = {
-            "daily":        ("Täglich verabreichte Impfdosen",
-                             self.data_grabber.doses_diff, "daily-plot.png", float(0)),
-            "avg":          ("Täglich verabreichte Impfdosen im 7-Tages-Mittel",
-                             self.data_grabber.doses_diff_avg, "avg-plot.png", float(0)),
-            "sum":          ("Insgesamt verabreichte Impfdosen",
-                             self.data_grabber.doses_total, "sum-plot.png", float(0)),
-            "institution":  ("Täglich verabreichte Impfdosen nach Institution",
+            "daily":    (strings["title-daily-plot"], self.data_grabber.doses_diff, "daily-plot.png", float(0)),
+            "avg":      (strings["title-avg-plot"], self.data_grabber.doses_diff_avg, "avg-plot.png", float(0)),
+            "sum":      (strings["title-sum-plot"], self.data_grabber.doses_total, "sum-plot.png", float(0)),
+            "institution":  (strings["title-inst-plot"],
                              self.data_grabber.doses_by_institution_diff, "inst-daily-plot.png", float(0)),
-            "inst-sum":     ("Summierte Impfdosen nach Institution",
+            "inst-sum":     (strings["title-inst-sum-plot"],
                              self.data_grabber.doses_by_institution_total, "inst-total-plot.png", float(0)),
         }
 
