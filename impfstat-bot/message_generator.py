@@ -10,21 +10,24 @@ summarize_ids = [
     ('impf_quote_voll', "Impfquote vollständig geimpft: ", util.to_percent),
 ]
 
+consts = util.get_conf_file("constants.json")
 
 class MessageGenerator:
     def __init__(self, data_handler):
         self.data_handler = data_handler
 
-    def prognosis(self, quote=.7, population=83190556):
+    def prognosis(self, quote=.7):
         self.data_handler.update()
         data, n_samples = self.data_handler.data, self.data_handler.data_len
         doses_given = int(data["dosen_kumulativ"][n_samples - 1])
         doses_per_day = sum(int(s) for s in data["dosen_differenz_zum_vortag"][n_samples - 7:n_samples]) / 7
-        doses_per_vacc = 2
-        doses_needed = (quote * doses_per_vacc * population) - doses_given
+        doses_per_vacc = consts["doses_per_vacc"]
+        doses_needed = (quote * doses_per_vacc * consts["population"]) - doses_given
         time_needed = doses_needed / doses_per_day
-        return "{:2.0f}% der Bevölkerung könnten bei dem momentanen Tempo nach {:.1f} Monaten vollständig geimpft sein.".format(
-            quote * 100, time_needed / 30)
+        months = int(time_needed / 30)
+        days = int(time_needed % 30)
+        return "{:2.0f}% der Bevölkerung könnten bei dem momentanen Tempo nach {} Monaten und {} Tagen vollständig geimpft sein.".format(
+            quote * 100, months, days)
 
     def sumarize(self):
         self.data_handler.update()

@@ -9,7 +9,7 @@ import util
 
 class DataGrabber:
     def __init__(self):
-        self.conf = util.get_conf()
+        self.conf = util.get_conf_file()
         self.doses_diff_avg: dict = {}
         self.last_update = 0
         self.data_path = util.get_resource_file_path(self.conf["data_filename"], "data")
