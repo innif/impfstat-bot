@@ -9,6 +9,7 @@ from data_grabber import DataGrabber
 
 def gen_stacked_plot(content, labels, n_samples, n_labels, title, path, x_label='Datum', y_label='Impfdosen', ):
     plt.ioff()
+    plt.style.use("seaborn-whitegrid")
     fig, ax = plt.subplots()
     ax.stackplot(labels, content.values(), labels=content.keys())
     ax.legend(loc='upper left')
