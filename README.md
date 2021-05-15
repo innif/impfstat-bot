@@ -1,7 +1,7 @@
 # Impfstatistik Telegram Bot (@impfstat_bot)
 Das ist ein kleiner Telegram-bot, der Dich über die aktuellen Impfstatistiken informiert.
 
-t.me/impfstatdebug_bot
+[t.me/impfstatdebug_bot](t.me/impfstatdebug_bot)
 
 Der Bot verwendet die Daten vom [impfdashboard](https://impfdashboard.de/) des Bundesministeriums für Gesundheit.
 
