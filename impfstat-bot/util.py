@@ -17,7 +17,7 @@ def get_resource_file(name: str, folder: str = "resources", mode: str = "r"):
     rel_path = "{}/{}".format(folder, name)
     base_path = Path(__file__).parent
     file_path = (base_path / rel_path).resolve()
-    return open(file_path, mode)
+    return open(file_path, mode, encoding="utf-8")
 
 
 def log(update: Update, context: CallbackContext, tag="MSG"):

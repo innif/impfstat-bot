@@ -10,6 +10,8 @@ data_grabber = DataGrabber()
 harry_plotter = Plotter(data_grabber)
 mail_man = MessageGenerator(data_grabber)
 
+strings = util.get_conf_file("strings.json")
+
 
 def send_plot(update: Update, context: CallbackContext, plot_type: str):
     plot_path = harry_plotter.gen_plot(plot_type)
@@ -17,8 +19,11 @@ def send_plot(update: Update, context: CallbackContext, plot_type: str):
     util.log(update, context)
 
 
-def send_text(update: Update, context: CallbackContext, text: str) -> None:
-    update.message.reply_text(text)
+def send_text(update: Update, context: CallbackContext, text: str, parse_mode="") -> None:
+    if parse_mode != "":
+        update.message.reply_text(text, parse_mode=parse_mode)
+    else:
+        update.message.reply_text(text)
     util.log(update, context)
 
 
@@ -46,6 +51,11 @@ def send_institution_total(update: Update, context: CallbackContext) -> None:
     send_plot(update, context, "inst-sum")
 
 
+def info(update: Update, context: CallbackContext) -> None:
+    repl = mail_man.info()
+    send_text(update, context, repl, "markdown")
+
+
 def help(update: Update, context: CallbackContext) -> None:
     repl = mail_man.help(commands)
     send_text(update, context, repl)
@@ -58,25 +68,26 @@ def prognosis(update: Update, context: CallbackContext) -> None:
 
 def numbers(update: Update, context: CallbackContext) -> None:
     repl = mail_man.sumarize()
-    send_text(update, context, repl)
+    send_text(update, context, repl, "markdown")
 
 
 def say_hi(update: Update, context: CallbackContext):
     repl = mail_man.start()
     send_text(update, context, repl)
 
+functions = [
+    ('7-day-avg', send_avg),
+    ('daily', send_daily),
+    ('total', send_sum),
+    ('prognosis', prognosis),
+    ('numbers', numbers),
+    ('inst-daily', send_institution_daily),
+    ('inst-total', send_institution_total),
+    ('info', info),
+    ('help', help)]
 
-commands = [
-    ("7_tage_mittel",   "Liefert eine Grafik der täglich verabreichten Impfdosen mit einem 7-Tage Mittelwert.", send_avg),
-    ('dosen_taeglich',  "Liefert eine Grafik der täglich verimpften Dosen.", send_daily),
-    ('dosen_summiert',  "Liefert eine Grafik der insgesamt verimpften Dosen.", send_sum),
-    ('prognose',        "Gibt an, wie lange es bei dem Aktuellen Impftempo bräuchte, 70% der Bevölkerung zu impfen.",
-     prognosis),
-    ('zahlen',          "Gibt eine Übersicht der wesentlichen Kennzahlen aus.", numbers),
-    ('einrichtung',     "Liefert eine Grafik der täglich verimpften Dosen nach Einrichtung", send_institution_daily),
-    ('einrichtung_summiert', "Liefert eine Grafik der summierten verimpften Dosen nach Einrichtung",
-     send_institution_total),
-    ('help',            "Übersicht aller Befehle", help), ]
+c_strings = strings["commands"]
+commands = [(c_strings[s]["command"], c_strings[s]["description"], f) for s, f in functions]
 
 updater = Updater(util.get_apikey())
 
