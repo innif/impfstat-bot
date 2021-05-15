@@ -19,6 +19,7 @@ class DataGrabber:
         self.doses_total: dict = {}
         self.doses_by_institution_total: dict = {}
         self.doses_by_institution_diff: dict = {}
+        self.doses_by_institution_avg: dict = {}
         self.doses_diff: dict = {}
         self.data_len = 0
         self.update()
@@ -50,6 +51,7 @@ class DataGrabber:
             self.doses_by_institution_diff[key] += [
                 self.doses_by_institution_total[key][i] - self.doses_by_institution_total[key][i - 1]
                 for i in range(1, self.data_len)]
+            self.doses_by_institution_avg[key] = [sum(self.doses_by_institution_diff[key][i - 7:i]) / 7 for i in range(self.data_len)]
 
     def _get_vaccination_data(self):
         if os.path.exists(self.data_path):

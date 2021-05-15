@@ -50,6 +50,8 @@ def send_institution_daily(update: Update, context: CallbackContext) -> None:
 def send_institution_total(update: Update, context: CallbackContext) -> None:
     send_plot(update, context, "inst-sum")
 
+def send_institution_avg(update: Update, context: CallbackContext) -> None:
+    send_plot(update, context, "inst-avg")
 
 def info(update: Update, context: CallbackContext) -> None:
     repl = mail_man.info()
@@ -83,6 +85,7 @@ functions = [
     ('numbers', numbers),
     ('inst-daily', send_institution_daily),
     ('inst-total', send_institution_total),
+    ('inst-avg', send_institution_avg),
     ('info', info),
     ('help', help)]
 

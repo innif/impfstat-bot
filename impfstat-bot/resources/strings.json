@@ -15,6 +15,7 @@
   "title-sum-plot": "Insgesamt verabreichte Impfdosen",
   "title-inst-plot": "Täglich verabreichte Impfdosen nach Institution",
   "title-inst-sum-plot": "Summierte Impfdosen nach Institution",
+  "title-inst-avg-plot": "Impfdosen nach Institution im 7-Tages-Mittel",
 
   "plot-x-label": "Datum",
   "plot-y-label": "Impfdosen",
@@ -47,6 +48,10 @@
     "inst-total": {
       "command": "einrichtung_summiert",
       "description": "Liefert eine Grafik der summierten verimpften Dosen nach Einrichtung."
+    },
+    "inst-avg": {
+      "command": "einrichtung_mittel",
+      "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit 7-Tage Mittelwert nach Einrichtung."
     },
     "info": {
       "command": "info",

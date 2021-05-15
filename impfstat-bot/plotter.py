@@ -40,6 +40,8 @@ class Plotter:
                              self.data_grabber.doses_by_institution_diff, "inst-daily-plot.png", float(0)),
             "inst-sum":     (strings["title-inst-sum-plot"],
                              self.data_grabber.doses_by_institution_total, "inst-total-plot.png", float(0)),
+            "inst-avg":     (strings["title-inst-avg-plot"],
+                             self.data_grabber.doses_by_institution_avg, "inst-avg-plot.png", float(0)),
         }
 
     def gen_plot(self, plot_type: str):
