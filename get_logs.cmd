@@ -1,0 +1,1 @@
+scp pi@raspberrypi:~/impfstat-bot/impfstat-bot/logs/log.txt logs/log.txt

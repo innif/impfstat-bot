@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 from telegram import Update
@@ -63,4 +64,7 @@ def get_conf() -> dict:
 def get_apikey() -> str:
     conf_file = get_resource_file("api-key.json")
     conf: dict = json.load(conf_file)
-    return conf["api-key"]
+    api_key: str = conf["api-key"]
+    if os.path.isfile(get_resource_file_path("debug.flag")):
+        api_key: str = conf["api-key-debug"]
+    return api_key
