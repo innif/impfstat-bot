@@ -39,8 +39,19 @@ def log(update: Update, context: CallbackContext, tag="MSG"):
 
 
 def date(x: str) -> str:
-    d = x.split("-")
-    return "{}.{}.{}".format(d[2], d[1], d[0])
+    try:
+        out = ""
+        x = x.split(" ")
+        d = x[0].split("-")
+        if len(d) > 2:
+            out += "{}.{}.{}".format(d[2], d[1], d[0])
+        else:
+            out += x[0]
+        if len(x) > 1:
+            out += " {}".format(x[1][:5])
+        return out
+    except Exception as e:
+        return "error"
 
 
 def dec_points(x) -> str:
@@ -52,11 +63,11 @@ def to_percent(x) -> str:
 
 
 def to_mio(x) -> str:
-    return "{:.2f} Mio.".format(int(x) / 1000000).replace(".", ",")
+    return "{:.2f}".format(int(x) / 1000000).replace(".", ",")
 
 
-def get_conf_file(name: str = "config.json") -> dict:
-    conf_file = get_resource_file(name)
+def read_json_file(name: str = "config.json", folder: str = "resources") -> dict:
+    conf_file = get_resource_file(name, folder=folder)
     conf: dict = json.load(conf_file)
     return conf
 

@@ -6,8 +6,8 @@ import numpy as np
 import util
 from data_grabber import DataGrabber
 
-conf = util.get_conf_file()
-strings = util.get_conf_file("strings.json")
+conf = util.read_json_file()
+strings = util.read_json_file("strings.json")
 
 
 def gen_stacked_plot(content, labels, n_samples, n_labels, title, path, x_label=None, y_label=None):
