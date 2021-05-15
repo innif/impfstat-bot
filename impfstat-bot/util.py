@@ -55,8 +55,8 @@ def to_mio(x) -> str:
     return "{:.2f} Mio.".format(int(x) / 1000000).replace(".", ",")
 
 
-def get_conf() -> dict:
-    conf_file = get_resource_file("config.json")
+def get_conf_file(name: str = "config.json") -> dict:
+    conf_file = get_resource_file(name)
     conf: dict = json.load(conf_file)
     return conf
 
