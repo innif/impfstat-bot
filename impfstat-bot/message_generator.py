@@ -1,21 +1,21 @@
 import util
-from data_grabber import DataGrabber
+from data_handler import DataHandler
 
 consts = util.read_json_file("constants.json")
 strings = util.read_json_file("strings.json")
 conf = util.read_json_file()
 
 summarize_ids = [
-    # ('date', strings['descriptor-date'], util.date),
     ('dosen_kumulativ', strings['descriptor-dosen_kumulativ'], util.to_mio),
     ('dosen_differenz_zum_vortag', strings['descriptor-dosen_differenz_zum_vortag'], util.dec_points),
     ('impf_quote_erst', strings['descriptor-impf_quote_erst'], util.to_percent),
     ('impf_quote_voll', strings['descriptor-impf_quote_voll'], util.to_percent),
 ]
 
+
 class MessageGenerator:
-    def __init__(self, data_handler: DataGrabber):
-        self.data_handler = data_handler
+    def __init__(self, data_handler: DataHandler):
+        self.data_handler: DataHandler = data_handler
 
     def prognosis(self, quote=.7) -> str:
         self.data_handler.update()

@@ -5,17 +5,17 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 import util
-from data_grabber import DataGrabber
+from data_handler import DataHandler
 from message_generator import MessageGenerator
 from plotter import Plotter
 
-data_grabber = DataGrabber()
-harry_plotter = Plotter(data_grabber)
-mail_man = MessageGenerator(data_grabber)
+data_handler = DataHandler()
+harry_plotter = Plotter(data_handler)
+mail_man = MessageGenerator(data_handler)
 
 strings = util.read_json_file("strings.json")
 logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
-                    level=logging.INFO, format='%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s')
+                    level=logging.INFO, format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(module)s - %(funcName)s - %(message)s')
 
 
 def send_plot(update: Update, context: CallbackContext, plot_type: str):

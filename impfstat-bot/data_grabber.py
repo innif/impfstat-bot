@@ -1,5 +1,6 @@
 import csv
-import os
+import json
+import logging
 import time
 
 import requests
@@ -9,82 +10,72 @@ import util
 
 class DataGrabber:
     def __init__(self):
-        self.conf = util.read_json_file()
-        self.doses_diff_avg: dict = {}
-        self.last_update = 0
-        self.data_path = util.get_resource_file_path(self.conf["data-filename"], "data")
-        self.data_update_info_path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
+        self.conf: dict = util.read_json_file()
+        self.sources: dict = self.conf["source"]
+        self.last_update: int = 0
         self.data: dict = {}
-        self.newest_data_line: dict = {}
-        self.doses_total: dict = {}
-        self.doses_by_institution_total: dict = {}
-        self.doses_by_institution_diff: dict = {}
-        self.doses_by_institution_avg: dict = {}
-        self.doses_diff: dict = {}
-        self.data_len = 0
+        self.data_len = {}
+        for k in self.sources.keys():
+            self.data[k] = {}
+            self.data_len[k] = 0
+        self.update_info = {
+            "vaccinationsLastUpdated": "never",
+            "deliveryLastUpdated": "never"
+        }
         self.update()
 
-    def update(self):
-        if time.time() - self.last_update < (60 * 60):  # letztes Update weniger als eine Stunde her
+    def update(self) -> bool:
+        if time.time() - self.last_update < (30 * 60):  # letztes Update weniger als eine Stunde her
+            return False
+        if self._get_vaccination_data():
+            self.last_update = time.time()
+            return True
+        return False
+
+    def _get_vaccination_data(self) -> bool:
+        update_info_file = requests.get(self.conf["data-update-info-url"])
+        update_info = json.loads(update_info_file.content.decode("utf-8"))
+        updated = False
+
+        if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
+            self.update_info["vaccinationsLastUpdated"] = update_info["vaccinationsLastUpdated"]
+            self._get_data("data")
+            self._get_data("by_state")
+            updated = True
+
+        if update_info.get("deliveryLastUpdated") != self.update_info.get("deliveryLastUpdated"):
+            self.update_info["deliveryLastUpdated"] = update_info["deliveryLastUpdated"]
+            self._get_data("deliveries")
+            updated = True
+
+        return updated
+
+    def _get_data(self, data_type: str):
+        if data_type not in self.sources.keys():
+            logging.warning("{} is not in sources.keys()")
             return
-        self._get_vaccination_data()
-        self._get_newest_data()
-        self.last_update = time.time()
-        self.doses_total = {
-            'biontech': [int(s) for s in self.data['dosen_biontech_kumulativ']],
-            'astrazeneca': [int(s) for s in self.data['dosen_astrazeneca_kumulativ']],
-            'moderna': [int(s) for s in self.data['dosen_moderna_kumulativ']],
-            'johnson': [int(s) for s in self.data['dosen_johnson_kumulativ']],
-        }
-        self.doses_by_institution_total = {
-            'Impfzentren': [int(s) for s in self.data['dosen_dim_kumulativ']],
-            'Artztpraxen': [int(s) for s in self.data['dosen_kbv_kumulativ']],
-        }
-        for key in self.doses_total.keys():
-            self.doses_diff[key] = [self.doses_total[key][0]]
-            self.doses_diff[key] += [self.doses_total[key][i] - self.doses_total[key][i - 1] for i in
-                                     range(1, self.data_len)]
-            self.doses_diff_avg[key] = [sum(self.doses_diff[key][i - 7:i]) / 7 for i in range(self.data_len)]
+        url = self.sources[data_type]["url"]
+        path = self.sources[data_type]["path"]
+        path = util.get_resource_file_path(path, "data")
+        file = requests.get(url)
+        with open(path, 'wb') as f:
+            f.write(file.content)
 
-        for key in self.doses_by_institution_total.keys():
-            self.doses_by_institution_diff[key] = [self.doses_by_institution_total[key][0]]
-            self.doses_by_institution_diff[key] += [
-                self.doses_by_institution_total[key][i] - self.doses_by_institution_total[key][i - 1]
-                for i in range(1, self.data_len)]
-            self.doses_by_institution_avg[key] = [sum(self.doses_by_institution_diff[key][i - 7:i]) / 7 for i in range(self.data_len)]
-
-    def _get_vaccination_data(self):
-        if os.path.exists(self.data_path) and os.path.exists(self.data_update_info_path):
-            file1_age = time.time() - os.path.getmtime(self.data_path)
-            file2_age = time.time() - os.path.getmtime(self.data_update_info_path)
-            file_age = max(file1_age, file2_age)
-        else:
-            file_age = float("inf")
-        if file_age > (60 * 60):  # wenn Datei älter als eine Stunde ist...
-            vacc_file = requests.get(self.conf["data-url"])
-            with open(self.data_path, 'wb') as f:
-                f.write(vacc_file.content)
-            update_info_file = requests.get(self.conf["data-update-info-url"])
-            with open(self.data_update_info_path, 'wb') as f:
-                f.write(update_info_file.content)
-        self.data = {}
         titles = []
-        with open(self.data_path) as f:
+        with open(path) as f:
             csv_reader = csv.reader(f, delimiter='\t')
             first_line = True
             for row in csv_reader:
                 if first_line:
                     titles = row
                     for element in titles:
-                        self.data[element] = []
+                        self.data[data_type][element] = []
                     first_line = False
                 else:
                     for i, element in enumerate(row):
                         identifier = titles[i]
-                        self.data[identifier].append(element)
-        self.data_len = len(self.data["date"])
-
-    def _get_newest_data(self):
-        self.newest_data_line = {}
-        for key, val in zip(self.data.keys(), self.data.values()):
-            self.newest_data_line[key] = val[self.data_len - 1]
+                        self.data[data_type][identifier].append(element)
+        data: dict = self.data[data_type]
+        for k in data.keys():
+            self.data_len[data_type] = len(data[k])
+            break
