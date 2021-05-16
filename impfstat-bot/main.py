@@ -20,15 +20,28 @@ strings = util.read_json_file("strings.json")
 logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
                     level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(funcName)s - %(filename)s:%(lineno)d - %(message)s')
+whitelist = util.read_json_file("whitelist.json")["list"]
+
+
+def check_whitelist(update: Update):
+    if update.effective_chat.id in whitelist:
+        return True
+    else:
+        update.message.reply_text(strings["datenschutz-text"])
+        return False
 
 
 def send_plot(update: Update, context: CallbackContext, plot_type: str):
+    if not check_whitelist(update):
+        return
     plot_path = harry_plotter.gen_plot(plot_type)
     update.message.reply_photo(open(plot_path, "rb"))
     util.log_message(update)
 
 
 def send_text(update: Update, context: CallbackContext, text: str, parse_mode="") -> None:
+    if not check_whitelist(update):
+        return
     if parse_mode != "":
         update.message.reply_text(text, parse_mode=parse_mode)
     else:
@@ -84,25 +97,39 @@ def numbers(update: Update, context: CallbackContext) -> None:
     send_text(update, context, repl, "markdown")
 
 
-def say_hi(update: Update, context: CallbackContext):
+def start(update: Update, context: CallbackContext):
+    if not check_whitelist(update):
+        return
     repl = mail_man.start()
     send_text(update, context, repl)
 
 
+def akzeptieren(update: Update, context: CallbackContext):
+    if update.effective_chat.id not in whitelist:
+        whitelist.append(update.effective_chat.id)
+        util.write_json_file({"list": whitelist}, "whitelist.json")
+        repl = mail_man.start()
+        send_text(update, context, repl)
+
+
 def subscribe(update: Update, context: CallbackContext):
+    if not check_whitelist(update):
+        return
     repl = update_service.subscribe(update)
     send_text(update, context, repl)
 
 
 def unsubscribe(update: Update, context: CallbackContext):
+    if not check_whitelist(update):
+        return
     repl = update_service.unsubscribe(update)
     send_text(update, context, repl)
 
 
-def update():
+def update_service_call():
     print("Hello")
     update_service.update(updater)
-    threading.Timer(30.0, update).start()
+    threading.Timer(30.0, update_service_call).start()
 
 functions = [
     ('7-day-avg', send_avg),
@@ -125,11 +152,12 @@ updater = Updater(util.get_apikey())
 
 for command, _, fun in commands:
     updater.dispatcher.add_handler(CommandHandler(command, fun))
-updater.dispatcher.add_handler(CommandHandler("start", say_hi))
+updater.dispatcher.add_handler(CommandHandler("start", start))
+updater.dispatcher.add_handler(CommandHandler("akzeptieren", akzeptieren))
 updater.dispatcher.add_error_handler(error_handler)
 updater.bot.set_my_commands([(c, d) for c, d, _ in commands])
 
 if __name__ == '__main__':
-    update()
+    update_service_call()
     updater.start_polling()
     updater.idle()
