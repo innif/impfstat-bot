@@ -27,30 +27,30 @@ class DataGrabber:
     def update(self) -> bool:
         if time.time() - self.last_update < (30 * 60):  # letztes Update weniger als eine Stunde her
             return False
-        if self._get_vaccination_data():
+        if self.__get_vaccination_data():
             self.last_update = time.time()
             return True
         return False
 
-    def _get_vaccination_data(self) -> bool:
+    def __get_vaccination_data(self) -> bool:
         update_info_file = requests.get(self.conf["data-update-info-url"])
         update_info = json.loads(update_info_file.content.decode("utf-8"))
         updated = False
 
         if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
             self.update_info["vaccinationsLastUpdated"] = update_info["vaccinationsLastUpdated"]
-            self._get_data("data")
-            self._get_data("by_state")
+            self.__get_data("data")
+            self.__get_data("by_state")
             updated = True
 
         if update_info.get("deliveryLastUpdated") != self.update_info.get("deliveryLastUpdated"):
             self.update_info["deliveryLastUpdated"] = update_info["deliveryLastUpdated"]
-            self._get_data("deliveries")
+            self.__get_data("deliveries")
             updated = True
 
         return updated
 
-    def _get_data(self, data_type: str):
+    def __get_data(self, data_type: str):
         if data_type not in self.sources.keys():
             logging.warning("{} is not in sources.keys()")
             return

@@ -30,27 +30,31 @@ class MessageGenerator:
         return strings['prognosis-text'].format(
             quote * 100, months, days)
 
-    def sumarize(self) -> str:
+    def summarize(self) -> str:
         self.data_handler.update()
         data = self.data_handler.newest_data_line
         file_name = conf["data-update-info-filename"]
         update_info = util.read_json_file(file_name, folder="data")
         out = strings['descriptor-date'].format(util.date(update_info["vaccinationsLastUpdated"]))
-        for id, descr, convert in summarize_ids:
-            out += descr.format(convert(data[id]))
+        for summarize_id, desc, convert in summarize_ids:
+            out += desc.format(convert(data[summarize_id]))
         return out
 
-    def help(self, command_list) -> str:
+    @staticmethod
+    def help(command_list) -> str:
         repl = strings["help-text"]
         for c, d, _ in command_list:
             repl += strings["help-entry-text"].format(command=c, description=d)
         return repl
 
-    def start(self) -> str:
+    @staticmethod
+    def start() -> str:
         return strings["start-text"]
 
-    def info(self) -> str:
+    @staticmethod
+    def info() -> str:
         return strings["info-text"]
 
-    def readme(self) -> str:
+    @staticmethod
+    def readme() -> str:
         return util.get_resource_file("Readme.md", "..").read()

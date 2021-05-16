@@ -30,20 +30,20 @@ class DataHandler:
         self.data = self.data_grabber.data
         self.data_len = self.data_grabber.data_len
 
-        self._calc_newest_data_line()
-        self._calc_doses_total()
-        self._calc_doses_by_institution()
+        self.__calc_newest_data_line()
+        self.__calc_doses_total()
+        self.__calc_doses_by_institution()
 
         self.dates = self.data["data"]["date"]
 
-    def _calc_newest_data_line(self):
+    def __calc_newest_data_line(self):
         data = self.data["data"]
         data_len = self.data_len["data"]
         self.newest_data_line = {}
         for key, val in zip(data.keys(), data.values()):
             self.newest_data_line[key] = val[data_len - 1]
 
-    def _calc_doses_total(self):
+    def __calc_doses_total(self):
         data = self.data["data"]
         data_len = self.data_len["data"]
         self.doses_total = {
@@ -52,23 +52,24 @@ class DataHandler:
             'moderna': [int(s) for s in data['dosen_moderna_kumulativ']],
             'johnson': [int(s) for s in data['dosen_johnson_kumulativ']],
         }
-        for key in self.doses_total.keys():
-            self.doses_diff[key] = [self.doses_total[key][0]]
-            self.doses_diff[key] += [self.doses_total[key][i] - self.doses_total[key][i - 1] for i in
-                                     range(1, data_len)]
-            self.doses_diff_avg[key] = [sum(self.doses_diff[key][i - 7:i]) / 7 for i in range(data_len)]
+        self.doses_diff, self.doses_diff_avg = self.__calc_div_avg(self.doses_total, data_len)
 
-    def _calc_doses_by_institution(self):
+    def __calc_doses_by_institution(self):
         data = self.data["data"]
         data_len = self.data_len["data"]
         self.doses_by_institution_total = {
             'Impfzentren': [int(s) for s in data['dosen_dim_kumulativ']],
             'Artztpraxen': [int(s) for s in data['dosen_kbv_kumulativ']],
         }
-        for key in self.doses_by_institution_total.keys():
-            self.doses_by_institution_diff[key] = [self.doses_by_institution_total[key][0]]
-            self.doses_by_institution_diff[key] += [
-                self.doses_by_institution_total[key][i] - self.doses_by_institution_total[key][i - 1]
-                for i in range(1, data_len)]
-            self.doses_by_institution_avg[key] = [sum(self.doses_by_institution_diff[key][i - 7:i]) / 7 for i in
-                                                  range(data_len)]
+        self.doses_by_institution_diff, self.doses_by_institution_avg = \
+            self.__calc_div_avg(self.doses_by_institution_total, data_len)
+
+    @staticmethod
+    def __calc_div_avg(total: dict, data_len: int, avg_span: int = 7) -> (dict, dict):
+        diff: dict = {}
+        avg: dict = {}
+        for key in total.keys():
+            diff[key] = [total[key][0]]
+            diff[key] += [total[key][i] - total[key][i - 1] for i in range(1, data_len)]
+            avg[key] = [sum(diff[key][i - avg_span:i]) / avg_span for i in range(data_len)]
+        return diff, avg

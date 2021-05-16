@@ -76,7 +76,7 @@ def prognosis(update: Update, context: CallbackContext) -> None:
 
 
 def numbers(update: Update, context: CallbackContext) -> None:
-    repl = mail_man.sumarize()
+    repl = mail_man.summarize()
     send_text(update, context, repl, "markdown")
 
 
