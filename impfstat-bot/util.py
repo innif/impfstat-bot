@@ -1,9 +1,9 @@
 import json
+import logging
 import os
 from pathlib import Path
 
 from telegram import Update
-from telegram.ext import CallbackContext
 
 
 def get_resource_file_path(name: str, folder: str = "resources"):
@@ -20,38 +20,27 @@ def get_resource_file(name: str, folder: str = "resources", mode: str = "r"):
     return open(file_path, mode, encoding="utf-8")
 
 
-def log(update: Update, context: CallbackContext, tag="MSG"):
-    f = None
-    try:
-        f = get_resource_file("log.txt", "logs", "a")
-        f.write("{}\t".format(tag))
-        if update is not None:
-            f.write("{}\t{}\t{}\t###\tCHAT:{}\tMESSAGE:{}\n".format(
-                update.message.date, update.message.chat.username, update.message.text, update.effective_chat,
+def log_message(update: Update):
+    logging.info("MSG: {} {} ### MESSAGE:{}".format(
+                update.message.date, update.message.text,
                 update.effective_message))
-        else:
-            f.write("\n")
-    except:
-        pass
-    finally:
-        if f is not None:
-            f.close()
 
 
 def date(x: str) -> str:
     try:
         out = ""
-        x = x.split(" ")
-        d = x[0].split("-")
+        x_split = x.split(" ")
+        d = x_split[0].split("-")
         if len(d) > 2:
             out += "{}.{}.{}".format(d[2], d[1], d[0])
         else:
-            out += x[0]
-        if len(x) > 1:
-            out += " {}".format(x[1][:5])
+            out += x_split[0]
+        if len(x_split) > 1:
+            out += " {}".format(x_split[1][:5])
         return out
     except Exception as e:
-        return "error"
+        logging.error(e)
+        return x
 
 
 def dec_points(x) -> str:

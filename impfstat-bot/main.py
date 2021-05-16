@@ -1,3 +1,6 @@
+import logging
+import time
+
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
@@ -11,12 +14,14 @@ harry_plotter = Plotter(data_grabber)
 mail_man = MessageGenerator(data_grabber)
 
 strings = util.read_json_file("strings.json")
+logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
+                    level=logging.INFO, format='%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s')
 
 
 def send_plot(update: Update, context: CallbackContext, plot_type: str):
     plot_path = harry_plotter.gen_plot(plot_type)
     update.message.reply_photo(open(plot_path, "rb"))
-    util.log(update, context)
+    util.log_message(update)
 
 
 def send_text(update: Update, context: CallbackContext, text: str, parse_mode="") -> None:
@@ -24,11 +29,11 @@ def send_text(update: Update, context: CallbackContext, text: str, parse_mode=""
         update.message.reply_text(text, parse_mode=parse_mode)
     else:
         update.message.reply_text(text)
-    util.log(update, context)
+    util.log_message(update)
 
 
 def error_handler(update, context: CallbackContext):
-    util.log(None, context, "ERR")
+    logging.warning("An error occured: {}".format(update))
 
 
 def send_avg(update: Update, context: CallbackContext) -> None:
@@ -50,8 +55,10 @@ def send_institution_daily(update: Update, context: CallbackContext) -> None:
 def send_institution_total(update: Update, context: CallbackContext) -> None:
     send_plot(update, context, "inst-sum")
 
+
 def send_institution_avg(update: Update, context: CallbackContext) -> None:
     send_plot(update, context, "inst-avg")
+
 
 def info(update: Update, context: CallbackContext) -> None:
     repl = mail_man.info()
@@ -76,6 +83,7 @@ def numbers(update: Update, context: CallbackContext) -> None:
 def say_hi(update: Update, context: CallbackContext):
     repl = mail_man.start()
     send_text(update, context, repl)
+
 
 functions = [
     ('7-day-avg', send_avg),
