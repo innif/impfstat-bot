@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 
 from telegram import Update
@@ -8,10 +9,12 @@ import util
 from data_handler import DataHandler
 from message_generator import MessageGenerator
 from plotter import Plotter
+from update_service import UpdateService
 
 data_handler = DataHandler()
 harry_plotter = Plotter(data_handler)
 mail_man = MessageGenerator(data_handler)
+update_service = UpdateService(data_handler, mail_man)
 
 strings = util.read_json_file("strings.json")
 logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
@@ -86,6 +89,21 @@ def say_hi(update: Update, context: CallbackContext):
     send_text(update, context, repl)
 
 
+def subscribe(update: Update, context: CallbackContext):
+    repl = update_service.subscribe(update)
+    send_text(update, context, repl)
+
+
+def unsubscribe(update: Update, context: CallbackContext):
+    repl = update_service.unsubscribe(update)
+    send_text(update, context, repl)
+
+
+def update():
+    print("Hello")
+    update_service.update(updater)
+    threading.Timer(30.0, update).start()
+
 functions = [
     ('7-day-avg', send_avg),
     ('daily', send_daily),
@@ -95,6 +113,8 @@ functions = [
     ('inst-daily', send_institution_daily),
     ('inst-total', send_institution_total),
     ('inst-avg', send_institution_avg),
+    ('subscribe', subscribe),
+    ('unsubscribe', unsubscribe),
     ('info', info),
     ('help', help)]
 
@@ -110,5 +130,6 @@ updater.dispatcher.add_error_handler(error_handler)
 updater.bot.set_my_commands([(c, d) for c, d, _ in commands])
 
 if __name__ == '__main__':
+    update()
     updater.start_polling()
     updater.idle()

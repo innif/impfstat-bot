@@ -33,8 +33,7 @@ class MessageGenerator:
     def summarize(self) -> str:
         self.data_handler.update()
         data = self.data_handler.newest_data_line
-        file_name = conf["data-update-info-filename"]
-        update_info = util.read_json_file(file_name, folder="data")
+        update_info = self.data_handler.update_info
         out = strings['descriptor-date'].format(util.date(update_info["vaccinationsLastUpdated"]))
         for summarize_id, desc, convert in summarize_ids:
             out += desc.format(convert(data[summarize_id]))
@@ -57,4 +56,7 @@ class MessageGenerator:
 
     @staticmethod
     def readme() -> str:
-        return util.get_resource_file("Readme.md", "..").read()
+        f = util.get_resource_file("Readme.md", "..")
+        s = f.read()
+        f.close()
+        return s

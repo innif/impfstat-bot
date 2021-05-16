@@ -124,3 +124,5 @@ dmypy.json
 .pyre/
 
 logs/
+
+impfstat-bot/resources/subscribers.json
