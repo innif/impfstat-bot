@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 
 from telegram import Update
@@ -85,6 +86,10 @@ def say_hi(update: Update, context: CallbackContext):
     repl = mail_man.start()
     send_text(update, context, repl)
 
+def test():
+    print("Hello")
+    threading.Timer(10.0, test).start()
+    updater.bot.send_message(286493562, "hi")
 
 functions = [
     ('7-day-avg', send_avg),
@@ -110,5 +115,6 @@ updater.dispatcher.add_error_handler(error_handler)
 updater.bot.set_my_commands([(c, d) for c, d, _ in commands])
 
 if __name__ == '__main__':
+    test()
     updater.start_polling()
     updater.idle()

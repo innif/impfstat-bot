@@ -38,15 +38,15 @@ class Plotter:
     def __init__(self, data_handler: DataHandler):
         self.data_handler: DataHandler = data_handler
         self.types = {
-            "daily":    (strings["title-daily-plot"], self.data_handler.doses_diff, "daily-plot.png", float(0)),
-            "avg":      (strings["title-avg-plot"], self.data_handler.doses_diff_avg, "avg-plot.png", float(0)),
-            "sum":      (strings["title-sum-plot"], self.data_handler.doses_total, "sum-plot.png", float(0)),
-            "institution":  (strings["title-inst-plot"],
-                             self.data_handler.doses_by_institution_diff, "inst-daily-plot.png", float(0)),
-            "inst-sum":     (strings["title-inst-sum-plot"],
-                             self.data_handler.doses_by_institution_total, "inst-total-plot.png", float(0)),
-            "inst-avg":     (strings["title-inst-avg-plot"],
-                             self.data_handler.doses_by_institution_avg, "inst-avg-plot.png", float(0)),
+            "daily": (strings["title-daily-plot"], self.data_handler.doses_diff, "daily-plot.png", float(0)),
+            "avg": (strings["title-avg-plot"], self.data_handler.doses_diff_avg, "avg-plot.png", float(0)),
+            "sum": (strings["title-sum-plot"], self.data_handler.doses_total, "sum-plot.png", float(0)),
+            "institution": (strings["title-inst-plot"],
+                            self.data_handler.doses_by_institution_diff, "inst-daily-plot.png", float(0)),
+            "inst-sum": (strings["title-inst-sum-plot"],
+                         self.data_handler.doses_by_institution_total, "inst-total-plot.png", float(0)),
+            "inst-avg": (strings["title-inst-avg-plot"],
+                         self.data_handler.doses_by_institution_avg, "inst-avg-plot.png", float(0)),
         }
 
     def gen_plot(self, plot_type: str):
