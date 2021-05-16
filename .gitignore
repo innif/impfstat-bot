@@ -126,3 +126,5 @@ dmypy.json
 logs/
 
 impfstat-bot/resources/subscribers.json
+
+pi-data/
