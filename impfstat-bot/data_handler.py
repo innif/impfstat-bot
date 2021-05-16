@@ -22,6 +22,7 @@ class DataHandler:
 
         self.data = self.data_grabber.data
         self.data_len = self.data_grabber.data_len
+        self.update_info = self.data_grabber.update_info
         self.dates = []
 
         self.update(force_update=True)
@@ -33,6 +34,7 @@ class DataHandler:
 
         self.data = self.data_grabber.data
         self.data_len = self.data_grabber.data_len
+        self.update_info = self.data_grabber.update_info
 
         self.__calc_newest_data_line()
         self.__calc_doses_total()

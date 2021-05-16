@@ -14,7 +14,7 @@ from update_service import UpdateService
 data_handler = DataHandler()
 harry_plotter = Plotter(data_handler)
 mail_man = MessageGenerator(data_handler)
-update_service = UpdateService()
+update_service = UpdateService(data_handler, mail_man)
 
 strings = util.read_json_file("strings.json")
 logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
@@ -99,10 +99,10 @@ def unsubscribe(update: Update, context: CallbackContext):
     send_text(update, context, repl)
 
 
-def test():
+def update():
     print("Hello")
-    #threading.Timer(10.0, test).start()
-    updater.bot.send_message(286493562, "hi")
+    update_service.update(updater)
+    threading.Timer(30.0, update).start()
 
 functions = [
     ('7-day-avg', send_avg),
@@ -130,6 +130,6 @@ updater.dispatcher.add_error_handler(error_handler)
 updater.bot.set_my_commands([(c, d) for c, d, _ in commands])
 
 if __name__ == '__main__':
-    test()
+    update()
     updater.start_polling()
     updater.idle()
