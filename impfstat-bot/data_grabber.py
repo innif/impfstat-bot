@@ -23,10 +23,10 @@ class DataGrabber:
             "vaccinationsLastUpdated": "never",
             "deliveryLastUpdated": "never"
         }
-        self.update()
+        self.update(force_update=True)
 
-    def update(self) -> bool:
-        if time.time() - self.last_update < (30 * 60):  # letztes Update weniger als eine Stunde her
+    def update(self, force_update=False) -> bool:
+        if not force_update and time.time() - self.last_update < (self.conf["update-frequency"] * 60):  # letztes Update weniger als 10min her
             return False
         if self.__get_vaccination_data():
             self.last_update = time.time()
@@ -37,8 +37,14 @@ class DataGrabber:
     def __get_vaccination_data(self) -> bool:
         update_info_file = requests.get(self.conf["data-update-info-url"])
         update_info = json.loads(update_info_file.content.decode("utf-8"))
-        updated = False
+        try:
+            path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
+            with open(path, 'wb') as f:
+                f.write(update_info_file.content)
+        except Exception as e:
+            logging.warning(e)
 
+        updated = False
         if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
             self.update_info["vaccinationsLastUpdated"] = update_info["vaccinationsLastUpdated"]
             self.__get_data("data")
@@ -56,28 +62,34 @@ class DataGrabber:
         if data_type not in self.sources.keys():
             logging.warning("{} is not in sources.keys()")
             return
-        url = self.sources[data_type]["url"]
         path = self.sources[data_type]["path"]
         path = util.get_resource_file_path(path, "data")
-        file = requests.get(url)
-        with open(path, 'wb') as f:
-            f.write(file.content)
+        url = self.sources[data_type]["url"]
+        try:
+            file = requests.get(url)
+            with open(path, 'wb') as f:
+                f.write(file.content)
+        except Exception as e:
+            logging.warning(e)
 
         titles = []
-        with open(path) as f:
-            csv_reader = csv.reader(f, delimiter='\t')
-            first_line = True
-            for row in csv_reader:
-                if first_line:
-                    titles = row
-                    for element in titles:
-                        self.data[data_type][element] = []
-                    first_line = False
-                else:
-                    for i, element in enumerate(row):
-                        identifier = titles[i]
-                        self.data[data_type][identifier].append(element)
-        data: dict = self.data[data_type]
-        for k in data.keys():
-            self.data_len[data_type] = len(data[k])
-            break
+        try:
+            with open(path) as f:
+                csv_reader = csv.reader(f, delimiter='\t')
+                first_line = True
+                for row in csv_reader:
+                    if first_line:
+                        titles = row
+                        for element in titles:
+                            self.data[data_type][element] = []
+                        first_line = False
+                    else:
+                        for i, element in enumerate(row):
+                            identifier = titles[i]
+                            self.data[data_type][identifier].append(element)
+            data: dict = self.data[data_type]
+            for k in data.keys():
+                self.data_len[data_type] = len(data[k])
+                break
+        except Exception as e:
+            logging.warning(e)
