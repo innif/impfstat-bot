@@ -13,7 +13,7 @@
 
   "descriptor-date": "Datum: *{}*\n",
   "descriptor-dosen_kumulativ": "Insgesamt verabreichte Dosen: *{} Mio.*\n",
-  "descriptor-dosen_differenz_zum_vortag": "Dosen differenz zum Vortag: *{}*\n",
+  "descriptor-dosen_differenz_zum_vortag": "Dosen Differenz zum Vortag: *{}*\n",
   "descriptor-impf_quote_erst": "Impfquote Erstimpfung: *{}*\n",
   "descriptor-impf_quote_voll": "Impfquote vollständig geimpft: *{}*\n",
 
