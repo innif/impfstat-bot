@@ -127,7 +127,6 @@ def unsubscribe(update: Update, context: CallbackContext):
 
 
 def update_service_call():
-    print("Hello")
     update_service.update(updater)
     threading.Timer(30.0, update_service_call).start()
 
