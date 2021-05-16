@@ -1,7 +1,20 @@
 {
-  "data-url": "https://impfdashboard.de/static/data/germany_vaccinations_timeseries_v2.tsv",
   "data-update-info-url":"https://impfdashboard.de/static/data/metadata.json",
-  "data-filename": "data.tsv",
   "data-update-info-filename": "data-update-info.json",
-  "plt-style": "seaborn-whitegrid"
+  "plt-style": "seaborn-whitegrid",
+  "update-frequency": 10,
+  "source": {
+    "data": {
+      "url": "https://impfdashboard.de/static/data/germany_vaccinations_timeseries_v2.tsv",
+      "path": "data.tsv"
+    },
+    "deliveries": {
+      "url": "https://impfdashboard.de/static/data/germany_deliveries_timeseries_v2.tsv",
+      "path": "data-deliveries.tsv"
+    },
+    "by_state": {
+      "url": "https://impfdashboard.de/static/data/germany_vaccinations_by_state.tsv",
+      "path": "data-by-states.tsv"
+    }
+  }
 }
