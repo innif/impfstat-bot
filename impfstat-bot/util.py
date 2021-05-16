@@ -58,7 +58,14 @@ def to_mio(x) -> str:
 def read_json_file(name: str = "config.json", folder: str = "resources") -> dict:
     conf_file = get_resource_file(name, folder=folder)
     conf: dict = json.load(conf_file)
+    conf_file.close()
     return conf
+
+
+def write_json_file(content, name: str = "config.json", folder: str = "resources") -> None:
+    conf_file = get_resource_file(name, folder=folder, mode="w")
+    json.dump(content, conf_file)
+    conf_file.close()
 
 
 def get_apikey() -> str:

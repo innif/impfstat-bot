@@ -4,6 +4,11 @@
   "info-text":"*Datenquelle:* impfdashboard.de, RKI, BMG.\n*Source-Code:* [github](https://github.com/innif/impfstat-bot)\n*Entwickler:* Finn Harms",
   "help-text":"Du kannst zwischen folgenden Komandos wählen:\n",
   "help-entry-text":"/{command} - {description}\n",
+  "already-sub-text":"Du hast das tägliche Update bereits abonniert.",
+  "success-sub-text":"Du hast erfolgreich das tägliche Update abonniert. Du wirst nun immer informiert, wenn neue Zahlen zur Verfügung stehen.",
+  "already-unsub-text":"Du hast dieses Update nicht abonniert.",
+  "success-unsub-text":"Du hast dieses Update erfolgreich deabonniert.",
+
   "descriptor-date": "Datum: *{}*\n",
   "descriptor-dosen_kumulativ": "Insgesamt verabreichte Dosen: *{} Mio.*\n",
   "descriptor-dosen_differenz_zum_vortag": "Dosen differenz zum Vortag: *{}*\n",
@@ -60,6 +65,14 @@
     "help": {
       "command": "help",
       "description": "Übersicht aller Befehle"
+    },
+    "subscribe": {
+      "command": "abonnieren",
+      "description": "Aktiviert tägliche Updates"
+    },
+    "unsubscribe": {
+      "command": "deabonnieren",
+      "description": "Deaktiviert tägliche Updates"
     }
   }
 }

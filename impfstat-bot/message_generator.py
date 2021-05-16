@@ -57,4 +57,7 @@ class MessageGenerator:
 
     @staticmethod
     def readme() -> str:
-        return util.get_resource_file("Readme.md", "..").read()
+        f = util.get_resource_file("Readme.md", "..")
+        s = f.read()
+        f.close()
+        return s

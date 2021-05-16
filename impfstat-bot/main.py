@@ -9,10 +9,12 @@ import util
 from data_handler import DataHandler
 from message_generator import MessageGenerator
 from plotter import Plotter
+from update_service import UpdateService
 
 data_handler = DataHandler()
 harry_plotter = Plotter(data_handler)
 mail_man = MessageGenerator(data_handler)
+update_service = UpdateService()
 
 strings = util.read_json_file("strings.json")
 logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
@@ -86,9 +88,20 @@ def say_hi(update: Update, context: CallbackContext):
     repl = mail_man.start()
     send_text(update, context, repl)
 
+
+def subscribe(update: Update, context: CallbackContext):
+    repl = update_service.subscribe(update)
+    send_text(update, context, repl)
+
+
+def unsubscribe(update: Update, context: CallbackContext):
+    repl = update_service.unsubscribe(update)
+    send_text(update, context, repl)
+
+
 def test():
     print("Hello")
-    threading.Timer(10.0, test).start()
+    #threading.Timer(10.0, test).start()
     updater.bot.send_message(286493562, "hi")
 
 functions = [
@@ -100,6 +113,8 @@ functions = [
     ('inst-daily', send_institution_daily),
     ('inst-total', send_institution_total),
     ('inst-avg', send_institution_avg),
+    ('subscribe', subscribe),
+    ('unsubscribe', unsubscribe),
     ('info', info),
     ('help', help)]
 
