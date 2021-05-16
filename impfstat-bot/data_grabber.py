@@ -5,7 +5,6 @@ import time
 
 import requests
 
-import plotter
 import util
 
 
@@ -30,7 +29,6 @@ class DataGrabber:
             return False
         if self.__get_vaccination_data():
             self.last_update = time.time()
-            plotter.delete_plots()
             return True
         return False
 

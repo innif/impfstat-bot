@@ -2,6 +2,10 @@ import util
 from data_grabber import DataGrabber
 
 
+def delete_plots():
+    util.delete_folder_content("plots", ".png")
+
+
 class DataHandler:
     def __init__(self):
         self.data_grabber = DataGrabber()
@@ -35,6 +39,8 @@ class DataHandler:
         self.__calc_doses_by_institution()
 
         self.dates = self.data["data"]["date"]
+
+        delete_plots()
 
     def __calc_newest_data_line(self):
         data = self.data["data"]
