@@ -68,3 +68,12 @@ def get_apikey() -> str:
     if os.path.isfile(get_resource_file_path("debug.flag")):
         api_key: str = conf["api-key-debug"]
     return api_key
+
+
+def delete_folder_content(folder: str, ending: str) -> None:
+    base_path = Path(__file__).parent
+    folder_path = (base_path / folder).resolve()
+    for f in os.listdir(folder_path):
+        if f.endswith(ending):
+            file_path = (folder_path / f).resolve()
+            os.remove(file_path)

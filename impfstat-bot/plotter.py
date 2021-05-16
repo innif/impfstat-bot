@@ -1,3 +1,4 @@
+import os
 import time
 
 import matplotlib.pyplot as plt
@@ -8,6 +9,10 @@ from data_handler import DataHandler
 
 conf = util.read_json_file()
 strings = util.read_json_file("strings.json")
+
+
+def delete_plots():
+    util.delete_folder_content("plots", ".png")
 
 
 def gen_stacked_plot(content, labels, n_samples, n_labels, title, path, x_label=None, y_label=None):
@@ -47,7 +52,7 @@ class Plotter:
     def gen_plot(self, plot_type: str):
         title, plot_data, filename, latest_update = self.types[plot_type]
         path = util.get_resource_file_path(filename, "plots")
-        if time.time() > latest_update * (10*60):
+        if not os.path.exists(path):
             self.data_handler.update()
             dates = self.data_handler.dates
             gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
