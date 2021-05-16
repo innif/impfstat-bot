@@ -131,6 +131,7 @@ def update_service_call():
     update_service.update(updater)
     threading.Timer(30.0, update_service_call).start()
 
+
 functions = [
     ('7-day-avg', send_avg),
     ('daily', send_daily),
