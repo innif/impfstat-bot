@@ -19,7 +19,7 @@ class MessageGenerator:
 
     def prognosis(self, quote=.7) -> str:
         self.data_handler.update()
-        data, n_samples = self.data_handler.data, self.data_handler.data_len
+        data, n_samples = self.data_handler.data["data"], self.data_handler.data_len["data"]
         doses_given = int(data["dosen_kumulativ"][n_samples - 1])
         doses_per_day = sum(int(s) for s in data["dosen_differenz_zum_vortag"][n_samples - 7:n_samples]) / 7
         doses_per_vacc = consts["doses_per_vacc"]
