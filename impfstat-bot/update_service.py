@@ -54,6 +54,7 @@ class UpdateService:
                 if "zahlen" in self.subscriptions[chat_id]:
                     try:
                         updater.bot.send_message(chat_id, msg, parse_mode="markdown")
+                        logging.info("sent update to {}".format(chat_id))
                     except Exception as e:
                         logging.error(e)
 

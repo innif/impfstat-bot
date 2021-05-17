@@ -23,6 +23,7 @@
   "title-inst-plot": "Täglich verabreichte Impfdosen nach Institution",
   "title-inst-sum-plot": "Summierte Impfdosen nach Institution",
   "title-inst-avg-plot": "Impfdosen nach Institution im 7-Tages-Mittel",
+  "title-pie-plot": "Anteil der geimpften Personen",
 
   "plot-x-label": "Datum",
   "plot-y-label": "Impfdosen",
@@ -79,6 +80,10 @@
     "unsubscribe": {
       "command": "deabonnieren",
       "description": "Deaktiviert tägliche Updates"
+    },
+    "pie": {
+      "command": "torte",
+      "description": "Liefert ein Tortendiagramm des Impffortschritts."
     }
   }
 }

@@ -25,6 +25,12 @@ class DataHandler:
         self.update_info = self.data_grabber.update_info
         self.dates = []
 
+        self.proportions = {
+            "Vollständig Geimpft": 0,
+            "Teilweise Geimpft": 0,
+            "ungeimpft": 0
+        }
+
         self.update(force_update=True)
 
     def update(self, force_update=False) -> bool:
@@ -41,6 +47,12 @@ class DataHandler:
         self.__calc_doses_by_institution()
 
         self.dates = self.data["data"]["date"]
+
+        full = float(self.newest_data_line["impf_quote_voll"])
+        part = float(self.newest_data_line["impf_quote_erst"]) - full
+        none = 1 - full - part
+
+        self.proportions = {"Vollständig Geimpft": full, "Teilweise Geimpft": part, "ungeimpft": none}
 
         delete_plots()
 
