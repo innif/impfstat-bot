@@ -22,8 +22,8 @@ def get_resource_file(name: str, folder: str = "resources", mode: str = "r"):
 
 def log_message(update: Update):
     logging.info("MSG: {} {} ### MESSAGE:{}".format(
-                update.message.date, update.message.text,
-                update.effective_message))
+        update.message.date, update.message.text,
+        update.effective_message))
 
 
 def date(x: str) -> str:
@@ -84,3 +84,13 @@ def delete_folder_content(folder: str, ending: str) -> None:
         if f.endswith(ending):
             file_path = (folder_path / f).resolve()
             os.remove(file_path)
+
+
+def file_to_string(name, folder="resources"):
+    f = get_resource_file(name, folder)
+    lines = f.readlines()
+    out = ""
+    for line in lines:
+        out += line
+    f.close()
+    return out

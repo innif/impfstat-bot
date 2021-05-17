@@ -1,15 +1,15 @@
 {
-  "start-text":"Moin! Ich möchte dir helfen, einen Überblick über die aktuellen Impfstatistiken zu bekommen. Für eine Auflistung aller Befehle schreibe /help",
+  "start-text":"Moin {name}!\nIch möchte dir helfen, einen Überblick über die aktuellen Impfstatistiken zu bekommen.\nMit dem Befehl /abonnieren kannst du ein tägliches Update der Zahlen bekommen.\nMit /7_tage_mittel kriegst du ein Diagramm des über 7 Tage gemittelten Impffortschritts.\nFür eine Auflistung aller Befehle schreibe /help.\nProbier dich aus!",
   "prognosis-text":"{:2.0f}% der Bevölkerung könnten bei dem momentanen Tempo nach {} Monaten und {} Tagen vollständig geimpft sein.",
-  "info-text":"*Datenquelle:* impfdashboard.de, RKI, BMG.\n*Source-Code:* [github](https://github.com/innif/impfstat-bot)\n*Entwickler:* Finn Harms",
-  "help-text":"Du kannst zwischen folgenden Komandos wählen:\n",
+  "info-text":"*Datenquelle:* impfdashboard.de, RKI, BMG.\n*Source-Code:* [github](https://github.com/innif/impfstat-bot)\n*Entwickler:* Finn Harms\n*Datenschutzerklärung:* /datenschutzerklaerung",
+  "help-text":"Du kannst zwischen folgenden Kommandos wählen:\n",
   "help-entry-text":"/{command} - {description}\n",
   "already-sub-text":"Du hast das tägliche Update bereits abonniert.",
   "success-sub-text":"Du hast erfolgreich das tägliche Update abonniert. Du wirst nun immer informiert, wenn neue Zahlen zur Verfügung stehen.",
   "already-unsub-text":"Du hast dieses Update nicht abonniert.",
   "success-unsub-text":"Du hast dieses Update erfolgreich deabonniert.",
   "auto-update-text":"Es gibt neue Daten:\n{}\nDies ist ein automatisches Update. Um automatische Updates auszuschalten, schreibe /deabonnieren",
-  "datenschutz-text": "Dieser Bot sammelt perönliche Daten (chat_id, Benutzername, Vorname). Um den Bot zu verwenden, musst du der Speicherung deiner Daten mit /akzeptieren zustimmen. Für Rückfragen: impfstatbot@finn-harms.de",
+  "datenschutz-text": "Dieser Bot sammelt persönliche Daten (chat_id, Benutzername, Vorname). Um den Bot zu verwenden, musst du der Speicherung deiner Daten gemäß der /datenschutzerklaerung mit /akzeptieren zustimmen. Für Rückfragen: impfstatbot@finn-harms.de",
 
   "descriptor-date": "Datum: *{}*\n",
   "descriptor-dosen_kumulativ": "Insgesamt verabreichte Dosen: *{} Mio.*\n",
@@ -63,6 +63,10 @@
     "info": {
       "command": "info",
       "description": "Informationen über Datenquelle und Sourcecode"
+    },
+    "datenschutz": {
+      "command": "datenschutzerklaerung",
+      "description": "Zeigt dir die Datenschutzerklärung dieses Bots an"
     },
     "help": {
       "command": "help",

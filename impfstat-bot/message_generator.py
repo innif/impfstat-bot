@@ -47,8 +47,8 @@ class MessageGenerator:
         return repl
 
     @staticmethod
-    def start() -> str:
-        return strings["start-text"]
+    def start(name: str) -> str:
+        return strings["start-text"].format(name=name)
 
     @staticmethod
     def info() -> str:
