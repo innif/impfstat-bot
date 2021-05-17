@@ -9,7 +9,7 @@
   "already-unsub-text":"Du hast dieses Update nicht abonniert.",
   "success-unsub-text":"Du hast dieses Update erfolgreich deabonniert.",
   "auto-update-text":"Es gibt neue Daten:\n{}\nDies ist ein automatisches Update. Um automatische Updates auszuschalten, schreibe /deabonnieren",
-  "datenschutz-text": "Dieser Bot sammelt persönliche Daten (chat_id, Benutzername, Vorname). Um den Bot zu verwenden, musst du der Speicherung deiner Daten gemäß der /datenschutzerklaerung mit /akzeptieren zustimmen. Für Rückfragen: impfstatbot@finn-harms.de",
+  "datenschutz-text": "Hallo! Dieser Bot sammelt persönliche Daten (chat_id, Benutzername, Vorname). Um den Bot zu verwenden, musst du der Speicherung deiner Daten gemäß der /datenschutzerklaerung mit /akzeptieren zustimmen. Für Rückfragen: impfstatbot@finn-harms.de",
 
   "descriptor-date": "Datum: *{}*\n",
   "descriptor-dosen_kumulativ": "Insgesamt verabreichte Dosen: *{} Mio.*\n",
