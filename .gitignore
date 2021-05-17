@@ -128,3 +128,5 @@ logs/
 impfstat-bot/resources/subscribers.json
 
 pi-data/
+
+pi-backup/
