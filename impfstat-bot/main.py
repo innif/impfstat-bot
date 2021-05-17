@@ -82,7 +82,7 @@ def info(update: Update, context: CallbackContext) -> None:
     send_text(update, context, repl, "markdown")
 
 
-def help(update: Update, context: CallbackContext) -> None:
+def help_command(update: Update, context: CallbackContext) -> None:
     repl = mail_man.help(commands)
     send_text(update, context, repl)
 
@@ -100,7 +100,7 @@ def numbers(update: Update, context: CallbackContext) -> None:
 def start(update: Update, context: CallbackContext):
     if not check_whitelist(update):
         return
-    repl = mail_man.start()
+    repl = mail_man.start(update.effective_chat.first_name)
     send_text(update, context, repl)
 
 
@@ -108,8 +108,12 @@ def akzeptieren(update: Update, context: CallbackContext):
     if update.effective_chat.id not in whitelist:
         whitelist.append(update.effective_chat.id)
         util.write_json_file({"list": whitelist}, "whitelist.json")
-        repl = mail_man.start()
+        repl = mail_man.start(update.effective_chat.first_name)
         send_text(update, context, repl)
+
+
+def datenschutz(update: Update, context: CallbackContext):
+    update.message.reply_text(util.file_to_string("Datenschutzerklärung.md"), parse_mode="markdown")
 
 
 def subscribe(update: Update, context: CallbackContext):
@@ -143,7 +147,7 @@ functions = [
     ('subscribe', subscribe),
     ('unsubscribe', unsubscribe),
     ('info', info),
-    ('help', help)]
+    ('help', help_command)]
 
 c_strings = strings["commands"]
 commands = [(c_strings[s]["command"], c_strings[s]["description"], f) for s, f in functions]
@@ -154,6 +158,7 @@ for command, _, fun in commands:
     updater.dispatcher.add_handler(CommandHandler(command, fun))
 updater.dispatcher.add_handler(CommandHandler("start", start))
 updater.dispatcher.add_handler(CommandHandler("akzeptieren", akzeptieren))
+updater.dispatcher.add_handler(CommandHandler("datenschutzerklaerung", datenschutz))
 updater.dispatcher.add_error_handler(error_handler)
 updater.bot.set_my_commands([(c, d) for c, d, _ in commands])
 

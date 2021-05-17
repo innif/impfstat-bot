@@ -25,8 +25,8 @@ class DataGrabber:
         self.update(force_update=True)
 
     def update(self, force_update=False) -> bool:
-        if not force_update and time.time() - self.last_update < (self.conf["update-frequency"] * 60):  # letztes Update weniger als 10min her
-            return False
+        if not force_update and time.time() - self.last_update < (self.conf["update-frequency"] * 60):
+            return False  # letztes Update weniger als 10min her
         if self.__get_vaccination_data():
             self.last_update = time.time()
             return True
