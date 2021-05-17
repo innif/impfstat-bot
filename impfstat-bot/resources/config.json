@@ -3,6 +3,7 @@
   "data-update-info-filename": "data-update-info.json",
   "plt-style": "seaborn-whitegrid",
   "update-frequency": 10,
+  "update-service-frequency": 5,
   "source": {
     "data": {
       "url": "https://impfdashboard.de/static/data/germany_vaccinations_timeseries_v2.tsv",

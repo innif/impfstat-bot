@@ -37,6 +37,10 @@ def gen_stacked_plot(content, labels, n_samples, n_labels, title, path, x_label=
 class Plotter:
     def __init__(self, data_handler: DataHandler):
         self.data_handler: DataHandler = data_handler
+        self.types = {}
+        self.__get_data()
+
+    def __get_data(self):
         self.types = {
             "daily": (strings["title-daily-plot"], self.data_handler.doses_diff, "daily-plot.png", float(0)),
             "avg": (strings["title-avg-plot"], self.data_handler.doses_diff_avg, "avg-plot.png", float(0)),
@@ -54,6 +58,7 @@ class Plotter:
         path = util.get_resource_file_path(filename, "plots")
         if not os.path.exists(path):
             self.data_handler.update()
+            self.__get_data()
             dates = self.data_handler.dates
             gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
             self.types[plot_type] = title, plot_data, filename, time.time()

@@ -33,26 +33,37 @@ class DataGrabber:
         return False
 
     def __get_vaccination_data(self) -> bool:
-        update_info_file = requests.get(self.conf["data-update-info-url"])
-        update_info = json.loads(update_info_file.content.decode("utf-8"))
+        try:
+            update_info_file = requests.get(self.conf["data-update-info-url"])
+        except Exception as e:
+            logging.warning(e)
+            return False
+
+        update_info: dict = json.loads(update_info_file.content.decode("utf-8"))
+        updated: bool = False
+        try:
+            if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
+                self.update_info["vaccinationsLastUpdated"] = update_info["vaccinationsLastUpdated"]
+                self.__get_data("data")
+                self.__get_data("by_state")
+                updated = True
+
+            if update_info.get("deliveryLastUpdated") != self.update_info.get("deliveryLastUpdated"):
+                self.update_info["deliveryLastUpdated"] = update_info["deliveryLastUpdated"]
+                self.__get_data("deliveries")
+                updated = True
+        except Exception as e:
+            logging.warning(e)
+            return False
+
+        # Writeback update-info
         try:
             path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
             with open(path, 'wb') as f:
                 f.write(update_info_file.content)
         except Exception as e:
             logging.warning(e)
-
-        updated = False
-        if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
-            self.update_info["vaccinationsLastUpdated"] = update_info["vaccinationsLastUpdated"]
-            self.__get_data("data")
-            self.__get_data("by_state")
-            updated = True
-
-        if update_info.get("deliveryLastUpdated") != self.update_info.get("deliveryLastUpdated"):
-            self.update_info["deliveryLastUpdated"] = update_info["deliveryLastUpdated"]
-            self.__get_data("deliveries")
-            updated = True
+            return False
 
         return updated
 
@@ -63,31 +74,25 @@ class DataGrabber:
         path = self.sources[data_type]["path"]
         path = util.get_resource_file_path(path, "data")
         url = self.sources[data_type]["url"]
-        try:
-            file = requests.get(url)
-            with open(path, 'wb') as f:
-                f.write(file.content)
-        except Exception as e:
-            logging.warning(e)
+        file = requests.get(url)
+        with open(path, 'wb') as f:
+            f.write(file.content)
 
         titles = []
-        try:
-            with open(path) as f:
-                csv_reader = csv.reader(f, delimiter='\t')
-                first_line = True
-                for row in csv_reader:
-                    if first_line:
-                        titles = row
-                        for element in titles:
-                            self.data[data_type][element] = []
-                        first_line = False
-                    else:
-                        for i, element in enumerate(row):
-                            identifier = titles[i]
-                            self.data[data_type][identifier].append(element)
-            data: dict = self.data[data_type]
-            for k in data.keys():
-                self.data_len[data_type] = len(data[k])
-                break
-        except Exception as e:
-            logging.warning(e)
+        with open(path) as f:
+            csv_reader = csv.reader(f, delimiter='\t')
+            first_line = True
+            for row in csv_reader:
+                if first_line:
+                    titles = row
+                    for element in titles:
+                        self.data[data_type][element] = []
+                    first_line = False
+                else:
+                    for i, element in enumerate(row):
+                        identifier = titles[i]
+                        self.data[data_type][identifier].append(element)
+        data: dict = self.data[data_type]
+        for k in data.keys():
+            self.data_len[data_type] = len(data[k])
+            break

@@ -17,6 +17,7 @@ mail_man = MessageGenerator(data_handler)
 update_service = UpdateService(data_handler, mail_man)
 
 strings = util.read_json_file("strings.json")
+conf = util.read_json_file("config.json")
 logging.basicConfig(filename=util.get_resource_file_path("bot{}.log".format(int(time.time())), "logs"),
                     level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(funcName)s - %(filename)s:%(lineno)d - %(message)s')
@@ -132,7 +133,7 @@ def unsubscribe(update: Update, context: CallbackContext):
 
 def update_service_call():
     update_service.update(updater)
-    threading.Timer(30.0, update_service_call).start()
+    threading.Timer(conf["update-service-frequency"]*60, update_service_call).start()
 
 
 functions = [
