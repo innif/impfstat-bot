@@ -50,7 +50,8 @@ def send_plot(update: Update, context: CallbackContext, plot_type: str) -> None:
     if not check_whitelist(update):
         return
     plot_path = harry_plotter.gen_plot(plot_type)
-    update.message.reply_photo(open(plot_path, "rb"))
+    if plot_path is not None:
+        update.message.reply_photo(open(plot_path, "rb"))
     util.log_message(update)
 
 
@@ -83,6 +84,11 @@ def error_handler(update, context: CallbackContext):
 def send_avg(update: Update, context: CallbackContext) -> None:
     """Callback Methode für /7_tage_mittel"""
     send_plot(update, context, "avg")
+
+
+def send_pie_plot(update: Update, context: CallbackContext) -> None:
+    """Callback Methode für /torte"""
+    send_plot(update, context, "pie")
 
 
 def send_daily(update: Update, context: CallbackContext) -> None:
@@ -190,6 +196,7 @@ functions = [
     ('inst-daily', send_institution_daily),
     ('inst-total', send_institution_total),
     ('inst-avg', send_institution_avg),
+    ('pie', send_pie_plot),
     ('subscribe', subscribe),
     ('unsubscribe', unsubscribe),
     ('info', info),
