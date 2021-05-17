@@ -82,7 +82,7 @@ def info(update: Update, context: CallbackContext) -> None:
     send_text(update, context, repl, "markdown")
 
 
-def help(update: Update, context: CallbackContext) -> None:
+def help_command(update: Update, context: CallbackContext) -> None:
     repl = mail_man.help(commands)
     send_text(update, context, repl)
 
@@ -147,7 +147,7 @@ functions = [
     ('subscribe', subscribe),
     ('unsubscribe', unsubscribe),
     ('info', info),
-    ('help', help)]
+    ('help', help_command)]
 
 c_strings = strings["commands"]
 commands = [(c_strings[s]["command"], c_strings[s]["description"], f) for s, f in functions]
