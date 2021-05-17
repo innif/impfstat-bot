@@ -1,3 +1,4 @@
+import logging
 from telegram import Update
 from telegram.ext import Updater
 
@@ -41,15 +42,23 @@ class UpdateService:
             return strings["already-unsub-text"]
 
     def update(self, updater: Updater):
+        logging.info("update-service update")
         self.data_handler.update()
         if self.last_update["vaccinationsLastUpdated"] != self.data_handler.update_info["vaccinationsLastUpdated"]:
-            self.last_update = self.data_handler.update_info
+            logging.info("new Data available")
+            self.last_update = self.data_handler.update_info.copy()
             util.write_json_file(self.last_update, "last-update.json")
             msg = self.message_generator.summarize()
             msg = strings["auto-update-text"].format(msg)
             for chat_id in self.subscriptions.keys():
                 if "zahlen" in self.subscriptions[chat_id]:
-                    updater.bot.send_message(chat_id, msg, parse_mode="markdown")
+                    try:
+                        updater.bot.send_message(chat_id, msg, parse_mode="markdown")
+                    except Exception as e:
+                        logging.error(e)
 
     def __write_json(self):
-        util.write_json_file(self.subscriptions, "subscribers.json")
+        try:
+            util.write_json_file(self.subscriptions, "subscribers.json")
+        except Exception as e:
+            logging.error(e)
