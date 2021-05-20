@@ -3,7 +3,7 @@ import json
 import logging
 import time
 
-import requests
+import urllib.request
 
 import util
 
@@ -33,13 +33,14 @@ class DataGrabber:
         return False
 
     def __get_vaccination_data(self) -> bool:
+        path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
         try:
-            update_info_file = requests.get(self.conf["data-update-info-url"])
+            path, http_msg = urllib.request.urlretrieve(self.conf["data-update-info-url"], path)
         except Exception as e:
             logging.warning(e)
             return False
 
-        update_info: dict = json.loads(update_info_file.content.decode("utf-8"))
+        update_info: dict = json.load(open(path))
         updated: bool = False
         try:
             if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
@@ -56,15 +57,6 @@ class DataGrabber:
             logging.warning(e)
             return False
 
-        # Writeback update-info
-        try:
-            path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
-            with open(path, 'wb') as f:
-                f.write(update_info_file.content)
-        except Exception as e:
-            logging.warning(e)
-            return False
-
         return updated
 
     def __get_data(self, data_type: str):
@@ -74,9 +66,11 @@ class DataGrabber:
         path = self.sources[data_type]["path"]
         path = util.get_resource_file_path(path, "data")
         url = self.sources[data_type]["url"]
-        file = requests.get(url)
-        with open(path, 'wb') as f:
-            f.write(file.content)
+        try:
+            path, http_msg = urllib.request.urlretrieve(url, path)
+        except Exception as e:
+            logging.warning(e)
+            return
 
         titles = []
         with open(path) as f:
