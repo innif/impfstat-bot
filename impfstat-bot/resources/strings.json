@@ -1,4 +1,5 @@
 {
+  "watermark": "Telegram: @impfstat_bot",
   "start-text":"Moin {name}!\nIch möchte dir helfen, einen Überblick über die aktuellen Impfstatistiken zu bekommen.\nMit dem Befehl /abonnieren kannst du ein tägliches Update der Zahlen bekommen.\nMit /7_tage_mittel kriegst du ein Diagramm des über 7 Tage gemittelten Impffortschritts.\nFür eine Auflistung aller Befehle schreibe /help.\nProbier dich aus!",
   "prognosis-text":"{:2.0f}% der Bevölkerung könnten bei dem momentanen Tempo nach {} Monaten und {} Tagen vollständig geimpft sein.",
   "info-text":"*Datenquelle:* impfdashboard.de, RKI, BMG.\n*Source-Code:* [github](https://github.com/innif/impfstat-bot)\n*Entwickler:* Finn Harms\n*Datenschutzerklärung:* /datenschutzerklaerung",

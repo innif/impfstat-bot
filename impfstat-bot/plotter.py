@@ -25,6 +25,8 @@ def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: st
     plt.ioff()
     plt.style.use(conf["plt-style"])
     fig, ax = plt.subplots()
+    ax.text(1.1, -0.25, strings["watermark"], transform=ax.transAxes,
+            fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
     ax.stackplot(labels, content.values(), labels=content.keys())
     ax.legend(loc='upper left')
     ax.set_title(title)
@@ -43,6 +45,8 @@ def gen_pie_chart(content: dict, title: str, path: str):
     ax.set_title(title)
     ax.pie(sizes, labels=content.keys(), autopct='%1.1f%%', startangle=90, counterclock=False, explode=(0, 0, .05))
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    fig.text(1.1, -0.1, strings["watermark"], transform=ax.transAxes,
+            fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
 
     fig.savefig(path)
     return path
