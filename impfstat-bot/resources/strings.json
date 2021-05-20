@@ -28,6 +28,9 @@
   "plot-x-label": "Datum",
   "plot-y-label": "Impfdosen",
 
+  "unknown-command-text": ["Hä?", "Das habe ich jetzt nicht verstanden.", "I'm sorry Dave, I'm afraid I can't do that"],
+  "unknown-command-help": "\nFür eine Liste aller Kommandos, schreibe /help.",
+
   "commands": {
     "7-day-avg": {
       "command": "7_tage_mittel",

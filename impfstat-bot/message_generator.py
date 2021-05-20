@@ -1,3 +1,5 @@
+import random
+
 import util
 from data_handler import DataHandler
 
@@ -16,6 +18,7 @@ summarize_ids = [
 class MessageGenerator:
     def __init__(self, data_handler: DataHandler):
         self.data_handler: DataHandler = data_handler
+        self.available_commands: dict = {}
 
     def prognosis(self, quote=.7) -> str:
         self.data_handler.update()
@@ -39,20 +42,11 @@ class MessageGenerator:
             out += desc.format(convert(data[summarize_id]))
         return out
 
-    @staticmethod
-    def help(command_list) -> str:
+    def help(self) -> str:
         repl = strings["help-text"]
-        for c, d, _ in command_list:
+        for c, d, _ in self.available_commands:
             repl += strings["help-entry-text"].format(command=c, description=d)
         return repl
-
-    @staticmethod
-    def start(name: str) -> str:
-        return strings["start-text"].format(name=name)
-
-    @staticmethod
-    def info() -> str:
-        return strings["info-text"]
 
     @staticmethod
     def readme() -> str:
@@ -60,3 +54,9 @@ class MessageGenerator:
         s = f.read()
         f.close()
         return s
+
+    @staticmethod
+    def unknown_command():
+        text = random.choice(strings["unknown-command-text"])
+        text += strings["unknown-command-help"]
+        return text
