@@ -24,6 +24,7 @@ callback_service = CallbackService(mail_man, harry_plotter, update_service)
 
 strings = util.read_json_file("strings.json")  # Strings einlesen
 conf = util.read_json_file("config.json")  # config einlesen
+commands = util.read_json_file("commands.json")  # config einlesen
 
 
 def update_service_call():
@@ -34,45 +35,25 @@ def update_service_call():
     threading.Timer(conf["update-service-frequency"]*60, update_service_call).start()
 
 
-# die Funktionen inklusive string.json-Deskriptoren, die der Bot anbietet
-functions = [
-    ('7-day-avg', callback_service.send_avg),
-    ('daily', callback_service.send_daily),
-    ('total', callback_service.send_sum),
-    ('prognosis', callback_service.prognosis),
-    ('numbers', callback_service.numbers),
-    ('inst-daily', callback_service.send_institution_daily),
-    ('inst-total', callback_service.send_institution_total),
-    ('inst-avg', callback_service.send_institution_avg),
-    ('pie', callback_service.send_pie_plot),
-    ('subscribe', callback_service.subscribe),
-    ('unsubscribe', callback_service.unsubscribe),
-    ('info', callback_service.info),
-    ('help', callback_service.help_command)]
-unlisted_commands = [
-    ("start", callback_service.start),
-    ("akzeptieren", callback_service.akzeptieren),
-    ("datenschutzerklaerung", callback_service.datenschutz),
-    ()
-]
-
-# kommandos,beschreibung,callback-funktion als Tupel in Listen packen
-c_strings = strings["commands"]
-commands = [(c_strings[s]["command"], c_strings[s]["description"], f) for s, f in functions]
-mail_man.available_commands = commands
-
 updater = Updater(util.get_apikey())
 
+dropdown_commands = []
+
 # kommandos binden
-for command, _, fun in commands:
-    updater.dispatcher.add_handler(CommandHandler(command, fun))
-for command, fun in unlisted_commands:
-    updater.dispatcher.add_handler(CommandHandler(command, fun))
+for key in commands.keys():
+    command = commands[key]
+    callback = callback_service.get_callback(command["type"], command["resp-id"])
+    updater.dispatcher.add_handler(CommandHandler(key, callback))
+    if command["visible-dropdown"]:
+        dropdown_commands.append((key, command["description"]))
+    if command["visible-help"]:
+        mail_man.available_commands.append((key, command["description"]))
+
 updater.dispatcher.add_handler(MessageHandler(Filters.text, callback_service.unknown_command))
 updater.dispatcher.add_error_handler(callback_service.error_handler)
 
 # kommandoliste bereitstellen
-updater.bot.set_my_commands([(c, d) for c, d, _ in commands])
+updater.bot.set_my_commands(dropdown_commands)
 
 if __name__ == '__main__':
     update_service_call()

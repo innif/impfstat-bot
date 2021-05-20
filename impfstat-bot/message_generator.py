@@ -18,9 +18,20 @@ summarize_ids = [
 class MessageGenerator:
     def __init__(self, data_handler: DataHandler):
         self.data_handler: DataHandler = data_handler
-        self.available_commands: dict = {}
+        self.available_commands: list = []
 
-    def prognosis(self, quote=.7) -> str:
+    def gen_text(self, text_id: str) -> (str, str):
+        if text_id == "prognosis":
+            return "", self.__prognosis()
+        if text_id == "numbers":
+            return "", self.__summarize()
+        if text_id == "help":
+            return "", self.__help()
+        if text_id == "privacy-notice":
+            return "markdown", util.file_to_string("privacy.md")
+        return "", "ERROR"
+
+    def __prognosis(self, quote=.7) -> str:
         self.data_handler.update()
         data, n_samples = self.data_handler.data["data"], self.data_handler.data_len["data"]
         doses_given = int(data["dosen_kumulativ"][n_samples - 1])
@@ -33,7 +44,7 @@ class MessageGenerator:
         return strings['prognosis-text'].format(
             quote * 100, months, days)
 
-    def summarize(self) -> str:
+    def __summarize(self) -> str:
         self.data_handler.update()
         data = self.data_handler.newest_data_line
         update_info = self.data_handler.update_info
@@ -42,9 +53,9 @@ class MessageGenerator:
             out += desc.format(convert(data[summarize_id]))
         return out
 
-    def help(self) -> str:
+    def __help(self) -> str:
         repl = strings["help-text"]
-        for c, d, _ in self.available_commands:
+        for c, d in self.available_commands:
             repl += strings["help-entry-text"].format(command=c, description=d)
         return repl
 

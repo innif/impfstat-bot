@@ -20,6 +20,62 @@ class CallbackService:
         # Whitelist jener leute, die die DSGVO akzeptiert haben
         self.whitelist = util.read_json_file("whitelist.json")["list"]
 
+    def get_callback(self, command_type: str, resp_id: str):
+        if command_type == "plot":
+            def callback(update: Update, context: CallbackContext):
+                self.__send_plot(update, context, resp_id)
+        elif command_type == "text":
+            def callback(update: Update, context: CallbackContext):
+                self.__send_text_id(update, context, resp_id)
+        elif command_type == "const-text":
+            def callback(update: Update, context: CallbackContext):
+                self.__send_const(update, context, resp_id)
+        elif command_type == "custom":
+            callback = self.__get_custom_callback(resp_id)
+        else:
+            def callback(update: Update, context: CallbackContext):
+                pass
+            logging.error("unknown callback-id {}:{}".format(command_type, resp_id))
+        return callback
+
+    def __send_const(self, update, context, text_id):
+        if not self.__check_whitelist(update):
+            return
+        if text_id not in strings.keys():
+            logging.error("{} is not in strings.json".format(text_id))
+            return
+        update.message.reply_text(strings[text_id])
+        util.log_message(update)
+
+    def __get_custom_callback(self, resp_id: str):
+        if resp_id == "start":
+            return self.__start
+        elif resp_id == "subscribe":
+            return self.__subscribe
+        elif resp_id == "unsubscribe":
+            return self.__unsubscribe
+        elif resp_id == "accept":
+            return self.__akzeptieren
+        else:
+            def callback(update: Update, context: CallbackContext):
+                pass
+            logging.error("unknown callback-id custom:{}".format(resp_id))
+            return callback
+
+    @staticmethod
+    def error_handler(update, context: CallbackContext):
+        """
+        der error_handler, der vom Telegram.Updater aufgerufen wird, wenn ein Fehler auftritt
+        :param update: Nachrichtenupdate
+        :param context: Nachrichtencontext
+        """
+        logging.warning("An error occured: {}".format(update))
+
+    def unknown_command(self, update: Update, context: CallbackContext):
+        """Callback Methode unbekannte Kommandos"""
+        text = self.message_service.unknown_command()
+        self.__send_text(update, context, text)
+
     def __check_whitelist(self, update: Update):
         """
         Prüft, ob der Sender einer Nachricht auf der DSGVO-Whitelist steht.
@@ -47,13 +103,28 @@ class CallbackService:
             update.message.reply_photo(open(plot_path, "rb"))
         util.log_message(update)
 
-    def __send_text(self, update: Update, context: CallbackContext, text: str, parse_mode="") -> None:
+    def __send_text_id(self, update: Update, context: CallbackContext, text_id: str) -> None:
         """
         Sendet einen Text als Antwort auf eine Nachricht.
         :param update: Nachrichtenupdate
         :param context: Nachrichtencontext
-        :param text: Text
-        :param parse_mode: "", "markdown" oder "html"
+        :param text_id: Text-ID
+        """
+        if not self.__check_whitelist(update):
+            return
+        parse_mode, text = self.message_service.gen_text(text_id)
+        if parse_mode != "":
+            update.message.reply_text(text, parse_mode=parse_mode)
+        else:
+            update.message.reply_text(text)
+        util.log_message(update)
+
+    def __send_text(self, update: Update, context: CallbackContext, text, parse_mode = "") -> None:
+        """
+        Sendet einen Text als Antwort auf eine Nachricht.
+        :param update: Nachrichtenupdate
+        :param context: Nachrichtencontext
+        :param text_id: Text-ID
         """
         if not self.__check_whitelist(update):
             return
@@ -63,96 +134,30 @@ class CallbackService:
             update.message.reply_text(text)
         util.log_message(update)
 
-    @staticmethod
-    def error_handler(update, context: CallbackContext):
-        """
-        der error_handler, der vom Telegram.Updater aufgerufen wird, wenn ein Fehler auftritt
-        :param update: Nachrichtenupdate
-        :param context: Nachrichtencontext
-        """
-        logging.warning("An error occured: {}".format(update))
-
-    def send_avg(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /7_tage_mittel"""
-        self.__send_plot(update, context, "avg")
-
-    def send_pie_plot(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /torte"""
-        self.__send_plot(update, context, "pie")
-
-    def send_daily(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /dosen_taeglich"""
-        self.__send_plot(update, context, "daily")
-
-    def send_sum(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /dosen_summiert"""
-        self.__send_plot(update, context, "sum")
-
-    def send_institution_daily(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /einrichtung"""
-        self.__send_plot(update, context, "institution")
-
-    def send_institution_total(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /einrichtung_summiert"""
-        self.__send_plot(update, context, "inst-sum")
-
-    def send_institution_avg(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /einrichtung_mittel"""
-        self.__send_plot(update, context, "inst-avg")
-
-    def info(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /info"""
-        self.__send_text(update, context, strings["info-text"], "markdown")
-
-    def help_command(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /help"""
-        repl = self.message_service.help()
-        self.__send_text(update, context, repl)
-
-    def prognosis(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /prognose"""
-        repl = self.message_service.prognosis()
-        self.__send_text(update, context, repl)
-
-    def numbers(self, update: Update, context: CallbackContext) -> None:
-        """Callback Methode für /zahlen"""
-        repl = self.message_service.summarize()
-        self.__send_text(update, context, repl, "markdown")
-
-    def start(self, update: Update, context: CallbackContext):
+    def __start(self, update: Update, context: CallbackContext):
         """Callback Methode für /start"""
         if not self.__check_whitelist(update):
             return
         repl = strings["start-text"].format(name=update.effective_chat.first_name)
-        self.__send_text(update, context, repl)
+        self.__send_text_id(update, context, repl)
 
-    def akzeptieren(self, update: Update, context: CallbackContext):
+    def __akzeptieren(self, update: Update, context: CallbackContext):
         """Callback Methode für /akzeptieren - Fügt Nutzer zur DSGVO-Whitelist hinzu"""
         if update.effective_chat.id not in self.whitelist:
             self.whitelist.append(update.effective_chat.id)
             util.write_json_file({"list": self.whitelist}, "whitelist.json")
-            self.start(update, context)
+            self.__start(update, context)
 
-    def unknown_command(self, update: Update, context: CallbackContext):
-        """Callback Methode unbekannte Kommandos"""
-        text = self.message_service.unknown_command()
-        self.__send_text(update, context, text)
-
-    @staticmethod
-    def datenschutz(update: Update, context: CallbackContext):
-        """Callback Methode für /datenschutzerklaerung"""
-        update.message.reply_text(util.file_to_string("Datenschutzerklärung.md"), parse_mode="markdown")
-
-    def subscribe(self, update: Update, context: CallbackContext):
+    def __subscribe(self, update: Update, context: CallbackContext):
         """Callback Methode für /abonnieren"""
         if not self.__check_whitelist(update):
             return
         repl = self.update_service.subscribe(update)
-        self.__send_text(update, context, repl)
+        self.__send_text_id(update, context, repl)
 
-    def unsubscribe(self, update: Update, context: CallbackContext):
+    def __unsubscribe(self, update: Update, context: CallbackContext):
         """Callback Methode für /deabonnieren"""
         if not self.__check_whitelist(update):
             return
         repl = self.update_service.unsubscribe(update)
-        self.__send_text(update, context, repl)
+        self.__send_text_id(update, context, repl)
