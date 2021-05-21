@@ -24,11 +24,9 @@ class MessageGenerator:
         if text_id == "prognosis":
             return "", self.__prognosis()
         if text_id == "numbers":
-            return "", self.__summarize()
+            return "markdown", self.__summarize()
         if text_id == "help":
             return "", self.__help()
-        if text_id == "privacy-notice":
-            return "markdown", util.file_to_string("privacy.md")
         return "", "ERROR"
 
     def __prognosis(self, quote=.7) -> str:

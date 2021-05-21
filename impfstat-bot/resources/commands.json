@@ -1,4 +1,18 @@
 {
+  "zahlen": {
+    "visible-dropdown": true,
+    "visible-help": true,
+    "description": "Gibt eine Übersicht der wesentlichen Kennzahlen aus.",
+    "type": "text",
+    "resp-id": "numbers"
+  },
+  "prognose": {
+    "visible-dropdown": true,
+    "visible-help": true,
+    "description": "Gibt an, wie lange es bei dem Aktuellen Impftempo bräuchte, 70% der Bevölkerung zu impfen.",
+    "type": "text",
+    "resp-id": "prognosis"
+  },
   "7_tage_mittel": {
     "visible-dropdown": true,
     "visible-help": true,
@@ -19,20 +33,6 @@
     "description": "Liefert eine Grafik der insgesamt verimpften Dosen",
     "type": "plot",
     "resp-id": "sum"
-  },
-  "prognose": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Gibt an, wie lange es bei dem Aktuellen Impftempo bräuchte, 70% der Bevölkerung zu impfen.",
-    "type": "text",
-    "resp-id": "prognosis"
-  },
-  "zahlen": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Gibt eine Übersicht der wesentlichen Kennzahlen aus.",
-    "type": "text",
-    "resp-id": "numbers"
   },
   "einrichtung": {
     "visible-dropdown": true,
@@ -101,7 +101,7 @@
     "visible-dropdown": false,
     "visible-help": false,
     "description": "Zeigt dir die Datenschutzerklärung dieses Bots an",
-    "type": "text",
+    "type": "custom",
     "resp-id": "privacy-notice"
   },
   "start": {

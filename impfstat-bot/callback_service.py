@@ -46,7 +46,7 @@ class CallbackService:
         if text_id not in strings.keys():
             logging.error("{} is not in strings.json".format(text_id))
             return
-        update.message.reply_text(strings[text_id])
+        update.message.reply_text(strings[text_id], parse_mode="markdown")
         util.log_message(update)
 
     def __get_custom_callback(self, resp_id: str):
@@ -60,6 +60,8 @@ class CallbackService:
             return self.__akzeptieren
         elif resp_id == "feedback":
             return self.__feedback
+        elif resp_id == "privacy-notice":
+            return self.__privacy
         else:
             def callback(update: Update, context: CallbackContext):
                 pass
@@ -143,7 +145,7 @@ class CallbackService:
         if not self.__check_whitelist(update):
             return
         repl = strings["start-text"].format(name=update.effective_chat.first_name)
-        self.__send_text_id(update, context, repl)
+        self.__send_text(update, context, repl)
 
     def __akzeptieren(self, update: Update, context: CallbackContext):
         """Callback Methode für /akzeptieren - Fügt Nutzer zur DSGVO-Whitelist hinzu"""
@@ -180,3 +182,7 @@ class CallbackService:
         else:
             repl = strings["feedback-short-text"]
         self.__send_text(update, context, repl)
+
+    def __privacy(self, update: Update, context: CallbackContext):
+        text = util.file_to_string("privacy.md")
+        update.message.reply_text(text, parse_mode="markdown")
