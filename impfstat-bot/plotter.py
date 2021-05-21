@@ -66,7 +66,7 @@ def gen_daily_plot(content: dict, labels: list, n_samples, n_labels, title: str,
         bottom = bottom_new
     if avg is not None:
         avg_scaled = [a / scale_factor for a in avg]
-        ax.plot(dates, avg_scaled, ls="--", color="k")
+        ax.plot(dates, avg_scaled, label=strings["avg-label"], ls="--", color="k")
     ax.legend(loc='upper left')
     ax.set_title(title)
     ax.set_xlabel(x_label)
