@@ -130,6 +130,13 @@
     "type": "const-text",
     "resp-id": "feuern-text"
   },
+  "respond": {
+    "visible-dropdown": false,
+    "visible-help": false,
+    "description": "",
+    "type": "custom",
+    "resp-id": "respond"
+  },
   "erdarfbleiben": {
     "visible-dropdown": false,
     "visible-help": false,
