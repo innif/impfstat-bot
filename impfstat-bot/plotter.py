@@ -109,17 +109,21 @@ class Plotter:
         }
 
     def gen_plot(self, plot_id: str):
-        title, plot_data, filename, plot_type = self.plot_ids[plot_id]
-        path = util.get_resource_file_path(filename, "plots")
-        if not os.path.exists(path):
-            self.data_handler.update()
-            self.__get_data()
-            dates = self.data_handler.dates
-            if plot_type == "daily":
-                diff, avg = plot_data
-                path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg)
-            if plot_type == "stacked":
-                path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
-            if plot_type == "pie":
-                path = gen_pie_chart(plot_data, title, path)
-        return path
+        try:
+            title, plot_data, filename, plot_type = self.plot_ids[plot_id]
+            path = util.get_resource_file_path(filename, "plots")
+            if not os.path.exists(path):
+                self.data_handler.update()
+                self.__get_data()
+                dates = self.data_handler.dates
+                if plot_type == "daily":
+                    diff, avg = plot_data
+                    path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg)
+                if plot_type == "stacked":
+                    path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
+                if plot_type == "pie":
+                    path = gen_pie_chart(plot_data, title, path)
+            return path
+        except Exception as e:
+            logging.error(e)
+            return None
