@@ -20,12 +20,13 @@ def delete_plots():
 def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str):
     x_label = strings["plot-x-label"]
     y_label = strings["plot-y-label"]
+    dates = np.array(labels, dtype='datetime64[us]')
     plt.ioff()
     plt.style.use(conf["plt-style"])
     fig, ax = plt.subplots()
     ax.text(1.1, -0.25, strings["watermark"], transform=ax.transAxes,
             fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
-    ax.stackplot(labels, content.values(), labels=content.keys())
+    ax.stackplot(dates, content.values(), labels=content.keys())
     ax.legend(loc='upper left')
     ax.set_title(title)
     ax.set_xlabel(x_label)
@@ -50,7 +51,8 @@ def gen_daily_plot(content: dict, labels: list, n_samples, n_labels, title: str,
     ax.text(1.1, -0.25, strings["watermark"], transform=ax.transAxes,
             fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
     bottom = [0] * n_samples
-    dates = mdates.date2num(labels)
+    #dates = mdates.date2num(labels)
+    dates = np.array(labels, dtype='datetime64[us]')
     for key in content.keys():
         ax.bar(dates, content[key], 1.0, label=key, bottom=bottom)
         bottom_new = []
@@ -109,17 +111,21 @@ class Plotter:
         }
 
     def gen_plot(self, plot_id: str):
-        title, plot_data, filename, plot_type = self.plot_ids[plot_id]
-        path = util.get_resource_file_path(filename, "plots")
-        if not os.path.exists(path):
-            self.data_handler.update()
-            self.__get_data()
-            dates = self.data_handler.dates
-            if plot_type == "daily":
-                diff, avg = plot_data
-                path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg)
-            if plot_type == "stacked":
-                path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
-            if plot_type == "pie":
-                path = gen_pie_chart(plot_data, title, path)
-        return path
+        try:
+            title, plot_data, filename, plot_type = self.plot_ids[plot_id]
+            path = util.get_resource_file_path(filename, "plots")
+            if not os.path.exists(path):
+                self.data_handler.update()
+                self.__get_data()
+                dates = self.data_handler.dates
+                if plot_type == "daily":
+                    diff, avg = plot_data
+                    path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg)
+                if plot_type == "stacked":
+                    path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
+                if plot_type == "pie":
+                    path = gen_pie_chart(plot_data, title, path)
+            return path
+        except Exception as e:
+            logging.error(e)
+            return None
