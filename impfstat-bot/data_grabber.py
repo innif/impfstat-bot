@@ -3,7 +3,8 @@ import json
 import logging
 import time
 
-import urllib.request
+import requests
+from requests import Response
 
 import util
 
@@ -33,14 +34,12 @@ class DataGrabber:
         return False
 
     def __get_vaccination_data(self) -> bool:
-        path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
-        try:
-            path, http_msg = urllib.request.urlretrieve(self.conf["data-update-info-url"], path)
-        except Exception as e:
-            logging.warning(e)
+        update_info_resp: Response = self.__download_file(self.conf["data-update-info-url"])
+        if update_info_resp.status_code != 200:
+            logging.warning("Error {} while downloading file".format(update_info_resp.status_code))
             return False
 
-        update_info: dict = json.load(open(path))
+        update_info: dict = json.loads(update_info_resp.content.decode())
         updated: bool = False
         try:
             if update_info.get("vaccinationsLastUpdated") != self.update_info.get("vaccinationsLastUpdated"):
@@ -57,6 +56,10 @@ class DataGrabber:
             logging.warning(e)
             return False
 
+        path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
+        with open(path, 'wb') as output_file:
+            output_file.write(update_info_resp.content)
+
         return updated
 
     def __get_data(self, data_type: str):
@@ -67,7 +70,12 @@ class DataGrabber:
         path = util.get_resource_file_path(path, "data")
         url = self.sources[data_type]["url"]
         try:
-            path, http_msg = urllib.request.urlretrieve(url, path)
+            resp: Response = self.__download_file(url)
+            if resp.status_code != 200:
+                logging.warning("Error {} while downloading file".format(resp.status_code))
+                return
+            with open(path, 'wb') as output_file:
+                output_file.write(resp.content)
         except Exception as e:
             logging.warning(e)
             return
@@ -90,3 +98,11 @@ class DataGrabber:
         for k in data.keys():
             self.data_len[data_type] = len(data[k])
             break
+
+    @staticmethod
+    def __download_file(url):
+        s = requests.Session()
+        s.headers.update({"Cache-Control": "no-cache", "Pragma": "no-cache"})
+        response = s.get(url)
+        s.close()
+        return response
