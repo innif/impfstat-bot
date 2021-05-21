@@ -62,6 +62,8 @@ class CallbackService:
             return self.__feedback
         elif resp_id == "privacy-notice":
             return self.__privacy
+        elif resp_id == "respond":
+            return self.__respond
         else:
             def callback(update: Update, context: CallbackContext):
                 pass
@@ -125,7 +127,7 @@ class CallbackService:
             update.message.reply_text(text)
         util.log_message(update)
 
-    def __send_text(self, update: Update, context: CallbackContext, text, parse_mode = "") -> None:
+    def __send_text(self, update: Update, context: CallbackContext, text, parse_mode="") -> None:
         """
         Sendet einen Text als Antwort auf eine Nachricht.
         :param update: Nachrichtenupdate
@@ -175,7 +177,8 @@ class CallbackService:
         feedback_text = update.message.text
         if len(feedback_text) > len("/feedback "):
             message_text = strings["feedback-admin-text"].format(username=str(update.message.chat.username),
-                                                                 feedback=feedback_text)
+                                                                 feedback=feedback_text,
+                                                                 user_id=str(update.message.chat.id))
             self.updater.bot.send_message(api_key["admin-id"], message_text)
 
             repl = strings["feedback-text"]
@@ -186,3 +189,19 @@ class CallbackService:
     def __privacy(self, update: Update, context: CallbackContext):
         text = util.file_to_string("privacy.md")
         update.message.reply_text(text, parse_mode="markdown")
+
+    def __respond(self, update: Update, context: CallbackContext):
+        if str(update.message.chat.id) == api_key["admin-id"]:
+            msg = update.message.text.split()
+            if len(msg) < 3:
+                update.message.reply_text("to short")
+                return
+            target_id = msg[1]
+            text = " ".join(msg[2:])
+            try:
+                self.updater.bot.send_message(target_id, text)
+            except Exception as e:
+                update.message.reply_text(str(e))
+        else:
+            update.message.reply_text("unauthorized")
+
