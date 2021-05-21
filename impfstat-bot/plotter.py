@@ -84,7 +84,7 @@ def gen_pie_chart(content: dict, title: str, path: str):
     fig.text(1.1, -0.1, strings["watermark"], transform=ax.transAxes,
             fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
 
-    fig.savefig(path)
+    fig.savefig(path, format="png", dpi=conf["dpi"])
     return path
 
 
