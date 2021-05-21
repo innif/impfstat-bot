@@ -1,4 +1,5 @@
 {
+  "watermark": "Telegram: @impfstat_bot",
   "start-text":"Moin {name}!\nIch möchte dir helfen, einen Überblick über die aktuellen Impfstatistiken zu bekommen.\nMit dem Befehl /abonnieren kannst du ein tägliches Update der Zahlen bekommen.\nMit /7_tage_mittel kriegst du ein Diagramm des über 7 Tage gemittelten Impffortschritts.\nFür eine Auflistung aller Befehle schreibe /help.\nProbier dich aus!",
   "prognosis-text":"{:2.0f}% der Bevölkerung könnten bei dem momentanen Tempo nach {} Monaten und {} Tagen vollständig geimpft sein.",
   "info-text":"*Datenquelle:* impfdashboard.de, RKI, BMG.\n*Source-Code:* [github](https://github.com/innif/impfstat-bot)\n*Entwickler:* Finn Harms\n*Datenschutzerklärung:* /datenschutzerklaerung",
@@ -10,6 +11,12 @@
   "success-unsub-text":"Du hast dieses Update erfolgreich deabonniert.",
   "auto-update-text":"Es gibt neue Daten:\n{}\nDies ist ein automatisches Update. Um automatische Updates auszuschalten, schreibe /deabonnieren",
   "datenschutz-text": "Hallo! Dieser Bot sammelt persönliche Daten (chat_id, Benutzername, Vorname). Um den Bot zu verwenden, musst du der Speicherung deiner Daten gemäß der /datenschutzerklaerung mit /akzeptieren zustimmen. Für Rückfragen: impfstatbot@finn-harms.de",
+  "cake-response-text":"The cake is a lie. :(",
+  "feuern-text":"Pah! Du kriegst ab jetzt als letztes die täglichen Updates. 😠",
+  "erdarfbleiben-text":"Aww, wie lieb von dir. 🤗",
+  "feedback-text": "Vielen Dank für deine Nachricht. Ich habe die Nachricht gerade an meinen Entwickler Finn weitergeleitet. Falls du bei Telegram einen Benutzernamen angegeben hast, kann er dir auch antworten.",
+  "feedback-admin-text": "Hey Finn, es gibt Feedback von @{username}:\n{feedback}",
+  "feedback-short-text": "Schreibe dein Feedback bitte direkt hinter das /feedback. Zum Beispiel: \n/feedback Der Bot hat zu wenig Eastereggs.",
 
   "descriptor-date": "Datum: *{}*\n",
   "descriptor-dosen_kumulativ": "Insgesamt verabreichte Dosen: *{} Mio.*\n",
@@ -28,62 +35,17 @@
   "plot-x-label": "Datum",
   "plot-y-label": "Impfdosen",
 
-  "commands": {
-    "7-day-avg": {
-      "command": "7_tage_mittel",
-      "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit einem 7-Tage Mittelwert."
-    },
-    "daily": {
-      "command": "dosen_taeglich",
-      "description": "Liefert eine Grafik der täglich verimpften Dosen."
-    },
-    "total": {
-      "command": "dosen_summiert",
-      "description": "Liefert eine Grafik der insgesamt verimpften Dosen"
-    },
-    "prognosis": {
-      "command": "prognose",
-      "description": "Gibt an, wie lange es bei dem Aktuellen Impftempo bräuchte, 70% der Bevölkerung zu impfen."
-    },
-    "numbers": {
-      "command": "zahlen",
-      "description": "Gibt eine Übersicht der wesentlichen Kennzahlen aus."
-    },
-    "inst-daily": {
-      "command": "einrichtung",
-      "description": "Liefert eine Grafik der täglich verimpften Dosen nach Einrichtung."
-    },
-    "inst-total": {
-      "command": "einrichtung_summiert",
-      "description": "Liefert eine Grafik der summierten verimpften Dosen nach Einrichtung."
-    },
-    "inst-avg": {
-      "command": "einrichtung_mittel",
-      "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit 7-Tage Mittelwert nach Einrichtung."
-    },
-    "info": {
-      "command": "info",
-      "description": "Informationen über Datenquelle und Sourcecode"
-    },
-    "datenschutz": {
-      "command": "datenschutzerklaerung",
-      "description": "Zeigt dir die Datenschutzerklärung dieses Bots an"
-    },
-    "help": {
-      "command": "help",
-      "description": "Übersicht aller Befehle"
-    },
-    "subscribe": {
-      "command": "abonnieren",
-      "description": "Aktiviert tägliche Updates"
-    },
-    "unsubscribe": {
-      "command": "deabonnieren",
-      "description": "Deaktiviert tägliche Updates"
-    },
-    "pie": {
-      "command": "torte",
-      "description": "Liefert ein Tortendiagramm des Impffortschritts."
-    }
-  }
+  "unknown-command-text": [
+    "I'm sorry Dave, I'm afraid I can't do that",
+    "Beep, Beep, Boop?",
+    "Computer sagt nein...",
+    "Das übersteigt leider meinen Wortschatz.",
+    "Okay Google, was will der Nutzer mir sagen?",
+    "Ich habe das nicht verstanden. Möchtest du, dass dafür der Entwickler gefeuert wird? /feuern oder /erdarfbleiben?",
+    "Hodor?",
+    "Das sind nicht die Kommandos die ihr sucht.",
+    "Mmh whatcha say?",
+    "01010111 01101001 01100101 00100000 01100010 01101001 01110100 01110100 01100101 00111111"
+  ],
+  "unknown-command-help": "\nFür eine Liste aller Kommandos, schreibe /help."
 }

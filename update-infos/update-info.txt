@@ -1,0 +1,6 @@
+*Der Bot hat auch ein paar Neuerungen erhalten:*
+📌 Mit /feedback kannst du jetzt Feedback, Fragen, Verbesserungswünsche und Fehlermeldungen loswerden. Mein Entwickler freut sich über jede Nachricht, ehrlich!
+📌 Die Diagramme der täglichen Zahlen haben jetzt eine Durchschnittslinie. Probiere es aus, z.B. mit /einrichtung.
+📌 Die Diagramme werden jetzt in höherer Auflösung versendet.
+📌 Mit /torte kannst du dir ein Tortendiagramm zum aktuellen Impffortschritt anzeigen lassen.
+📌 Der Bot kann jetzt auch auf unerwartete Nachrichten reagieren, probier es aus.

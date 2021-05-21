@@ -1,4 +1,6 @@
 import logging
+import os
+
 from telegram import Update
 from telegram.ext import Updater
 
@@ -48,12 +50,15 @@ class UpdateService:
             logging.info("new Data available")
             self.last_update = self.data_handler.update_info.copy()
             util.write_json_file(self.last_update, "last-update.json")
-            msg = self.message_generator.summarize()
+            _, msg = self.message_generator.gen_text("numbers")
             msg = strings["auto-update-text"].format(msg)
+            update_notice = self.__get_update_notice()
             for chat_id in self.subscriptions.keys():
                 if "zahlen" in self.subscriptions[chat_id]:
                     try:
                         updater.bot.send_message(chat_id, msg, parse_mode="markdown")
+                        if update_notice is not None:
+                            updater.bot.send_message(chat_id, update_notice, parse_mode="markdown")
                         logging.info("sent update to {}".format(chat_id))
                     except Exception as e:
                         logging.error(e)
@@ -63,3 +68,13 @@ class UpdateService:
             util.write_json_file(self.subscriptions, "subscribers.json")
         except Exception as e:
             logging.error(e)
+
+    @staticmethod
+    def __get_update_notice(filename: str = "update-info.txt"):
+        path = util.get_resource_file_path(filename)
+        if os.path.exists(path):
+            update_info: str = util.file_to_string(filename)
+            os.remove(path)
+            return update_info
+        else:
+            return None

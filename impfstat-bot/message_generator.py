@@ -1,3 +1,5 @@
+import random
+
 import util
 from data_handler import DataHandler
 
@@ -16,8 +18,18 @@ summarize_ids = [
 class MessageGenerator:
     def __init__(self, data_handler: DataHandler):
         self.data_handler: DataHandler = data_handler
+        self.available_commands: list = []
 
-    def prognosis(self, quote=.7) -> str:
+    def gen_text(self, text_id: str) -> (str, str):
+        if text_id == "prognosis":
+            return "", self.__prognosis()
+        if text_id == "numbers":
+            return "markdown", self.__summarize()
+        if text_id == "help":
+            return "", self.__help()
+        return "", "ERROR"
+
+    def __prognosis(self, quote=.7) -> str:
         self.data_handler.update()
         data, n_samples = self.data_handler.data["data"], self.data_handler.data_len["data"]
         doses_given = int(data["dosen_kumulativ"][n_samples - 1])
@@ -30,7 +42,7 @@ class MessageGenerator:
         return strings['prognosis-text'].format(
             quote * 100, months, days)
 
-    def summarize(self) -> str:
+    def __summarize(self) -> str:
         self.data_handler.update()
         data = self.data_handler.newest_data_line
         update_info = self.data_handler.update_info
@@ -39,20 +51,11 @@ class MessageGenerator:
             out += desc.format(convert(data[summarize_id]))
         return out
 
-    @staticmethod
-    def help(command_list) -> str:
+    def __help(self) -> str:
         repl = strings["help-text"]
-        for c, d, _ in command_list:
+        for c, d in self.available_commands:
             repl += strings["help-entry-text"].format(command=c, description=d)
         return repl
-
-    @staticmethod
-    def start(name: str) -> str:
-        return strings["start-text"].format(name=name)
-
-    @staticmethod
-    def info() -> str:
-        return strings["info-text"]
 
     @staticmethod
     def readme() -> str:
@@ -60,3 +63,9 @@ class MessageGenerator:
         s = f.read()
         f.close()
         return s
+
+    @staticmethod
+    def unknown_command():
+        text = random.choice(strings["unknown-command-text"])
+        text += strings["unknown-command-help"]
+        return text
