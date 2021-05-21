@@ -11,7 +11,10 @@ class DataHandler:
         self.data_grabber = DataGrabber()
 
         self.conf = util.read_json_file()
-        self.doses_diff_avg: dict = {}
+
+        self.all_sum: list = []
+        self.all_diff: list = []
+        self.all_avg: list = []
 
         self.newest_data_line: dict = {}
         self.doses_total: dict = {}
@@ -19,6 +22,7 @@ class DataHandler:
         self.doses_by_institution_diff: dict = {}
         self.doses_by_institution_avg: dict = {}
         self.doses_diff: dict = {}
+        self.doses_diff_avg: dict = {}
 
         self.data = self.data_grabber.data
         self.data_len = self.data_grabber.data_len
@@ -72,7 +76,12 @@ class DataHandler:
             'moderna': [int(s) for s in data['dosen_moderna_kumulativ']],
             'johnson': [int(s) for s in data['dosen_johnson_kumulativ']],
         }
+        doses = {'all': [int(s) for s in data['dosen_kumulativ']]}
         self.doses_diff, self.doses_diff_avg = self.__calc_div_avg(self.doses_total, data_len)
+        all_diff, all_avg = self.__calc_div_avg(doses, data_len)
+        self.all_sum = doses['all']
+        self.all_diff = all_diff['all']
+        self.all_avg = all_avg['all']
 
     def __calc_doses_by_institution(self):
         data = self.data["data"]
