@@ -1,7 +1,7 @@
 {
   "data-update-info-url":"https://impfdashboard.de/static/data/metadata.json",
   "data-update-info-filename": "data-update-info.json",
-  "plt-style": "seaborn-whitegrid",
+  "plt-style": "seaborn",
   "update-frequency": 10,
   "update-service-frequency": 5,
   "dpi": 300,
