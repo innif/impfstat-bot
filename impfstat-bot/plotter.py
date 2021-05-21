@@ -17,16 +17,20 @@ def delete_plots():
     util.delete_folder_content("plots", ".png")
 
 
-def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str):
+def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str,
+                     scale_factor: float = 1., scale_label=""):
     x_label = strings["plot-x-label"]
-    y_label = strings["plot-y-label"]
+    y_label = strings["plot-y-label"] + scale_label
     dates = np.array(labels, dtype='datetime64[us]')
     plt.ioff()
     plt.style.use(conf["plt-style"])
     fig, ax = plt.subplots()
     ax.text(1.1, -0.25, strings["watermark"], transform=ax.transAxes,
             fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
-    ax.stackplot(dates, content.values(), labels=content.keys())
+    scaled_content: dict = {}
+    for key in content.keys():
+        scaled_content[key] = [c/scale_factor for c in content[key]]
+    ax.stackplot(dates, scaled_content.values(), labels=scaled_content.keys())
     ax.legend(loc='upper left')
     ax.set_title(title)
     ax.set_xlabel(x_label)
@@ -42,25 +46,27 @@ def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: st
     return path
 
 
-def gen_daily_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str, avg: list = None):
+def gen_daily_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str, avg: list = None,
+                   scale_factor: float = 1., scale_label=""):
     x_label = strings["plot-x-label"]
-    y_label = strings["plot-y-label"]
+    y_label = strings["plot-y-label"]+scale_label
     plt.ioff()
     plt.style.use(conf["plt-style"])
     fig, ax = plt.subplots()
     ax.text(1.1, -0.25, strings["watermark"], transform=ax.transAxes,
             fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
     bottom = [0] * n_samples
-    #dates = mdates.date2num(labels)
     dates = np.array(labels, dtype='datetime64[us]')
     for key in content.keys():
-        ax.bar(dates, content[key], 1.0, label=key, bottom=bottom)
+        content_scaled = [c / scale_factor for c in content[key]]
+        ax.bar(dates, content_scaled, 1.0, label=key, bottom=bottom)
         bottom_new = []
-        for b, c in zip(bottom, content[key]):
+        for b, c in zip(bottom, content_scaled):
             bottom_new.append(b + c)
         bottom = bottom_new
     if avg is not None:
-        ax.plot(dates, avg, ls="--", color="k")
+        avg_scaled = [a / scale_factor for a in avg]
+        ax.plot(dates, avg_scaled, ls="--", color="k")
     ax.legend(loc='upper left')
     ax.set_title(title)
     ax.set_xlabel(x_label)
@@ -120,9 +126,9 @@ class Plotter:
                 dates = self.data_handler.dates
                 if plot_type == "daily":
                     diff, avg = plot_data
-                    path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg)
+                    path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg, scale_factor=1e6, scale_label=" (in Mio)")
                 if plot_type == "stacked":
-                    path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path)
+                    path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path, scale_factor=1e6, scale_label=" (in Mio)")
                 if plot_type == "pie":
                     path = gen_pie_chart(plot_data, title, path)
             return path
