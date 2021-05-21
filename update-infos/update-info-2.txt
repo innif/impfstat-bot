@@ -1,0 +1,2 @@
+*Tipp:*
+Du kannst den Bot auch als Nutzer einer Gruppe hinzufügen, dann kannst du den Bot auch in der Gruppe z.B. mit /zahlen@impfstat_bot verwenden.
