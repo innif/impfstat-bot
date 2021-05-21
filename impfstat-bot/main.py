@@ -55,6 +55,8 @@ updater.dispatcher.add_error_handler(callback_service.error_handler)
 # kommandoliste bereitstellen
 updater.bot.set_my_commands(dropdown_commands)
 
+callback_service.updater = updater
+
 if __name__ == '__main__':
     update_service_call()
     updater.start_polling()

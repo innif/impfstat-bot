@@ -2,7 +2,7 @@ import logging
 from random import random
 
 from telegram import Update
-from telegram.ext import CallbackContext
+from telegram.ext import CallbackContext, Updater
 
 import util
 from message_generator import MessageGenerator
@@ -10,6 +10,7 @@ from plotter import Plotter
 from update_service import UpdateService
 
 strings = util.read_json_file("strings.json")  # Strings einlesen
+api_key = util.read_json_file("api-key.json")
 
 
 class CallbackService:
@@ -17,6 +18,7 @@ class CallbackService:
         self.message_service: MessageGenerator = message_service
         self.plot_service: Plotter = plot_service
         self.update_service: UpdateService = update_service
+        self.updater: Updater = None
         # Whitelist jener leute, die die DSGVO akzeptiert haben
         self.whitelist = util.read_json_file("whitelist.json")["list"]
 
@@ -56,6 +58,8 @@ class CallbackService:
             return self.__unsubscribe
         elif resp_id == "accept":
             return self.__akzeptieren
+        elif resp_id == "feedback":
+            return self.__feedback
         else:
             def callback(update: Update, context: CallbackContext):
                 pass
@@ -153,11 +157,26 @@ class CallbackService:
         if not self.__check_whitelist(update):
             return
         repl = self.update_service.subscribe(update)
-        self.__send_text_id(update, context, repl)
+        self.__send_text(update, context, repl)
 
     def __unsubscribe(self, update: Update, context: CallbackContext):
         """Callback Methode für /deabonnieren"""
         if not self.__check_whitelist(update):
             return
         repl = self.update_service.unsubscribe(update)
-        self.__send_text_id(update, context, repl)
+        self.__send_text(update, context, repl)
+
+    def __feedback(self, update: Update, context: CallbackContext):
+        """Callback Methode für /feedback"""
+        if not self.__check_whitelist(update):
+            return
+        feedback_text = update.message.text
+        if len(feedback_text) > len("/feedback "):
+            message_text = strings["feedback-admin-text"].format(username=str(update.message.chat.username),
+                                                                 feedback=feedback_text)
+            self.updater.bot.send_message(api_key["admin-id"], message_text)
+
+            repl = strings["feedback-text"]
+        else:
+            repl = strings["feedback-short-text"]
+        self.__send_text(update, context, repl)

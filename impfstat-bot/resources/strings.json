@@ -14,6 +14,9 @@
   "cake-response-text":"The cake is a lie. :(",
   "feuern-text":"Pah! Du kriegst ab jetzt als letztes die täglichen Updates. 😠",
   "erdarfbleiben-text":"Aww, wie lieb von dir. 🤗",
+  "feedback-text": "Vielen Dank für deine Nachricht. Ich habe die Nachricht gerade an meinen Entwickler Finn weitergeleitet. Falls du bei Telegram einen Benutzernamen angegeben hast, kann er dir auch antworten.",
+  "feedback-admin-text": "Hey Finn, es gibt Feedback von @{username}:\n{feedback}",
+  "feedback-short-text": "Schreibe dein Feedback bitte direkt hinter das /feedback. Zum Beispiel: \n/feedback Der Bot hat zu wenig Eastereggs.",
 
   "descriptor-date": "Datum: *{}*\n",
   "descriptor-dosen_kumulativ": "Insgesamt verabreichte Dosen: *{} Mio.*\n",

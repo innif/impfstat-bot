@@ -69,6 +69,13 @@
     "type": "const-text",
     "resp-id": "info-text"
   },
+  "feedback": {
+    "visible-dropdown": true,
+    "visible-help": true,
+    "description": "Beginnend mit /feedback kannst du Feedback, Fehlermeldungen, Fragen oder Verbesserungswünsche an meinen Entwickler senden.",
+    "type": "custom",
+    "resp-id": "feedback"
+  },
   "help": {
     "visible-dropdown": true,
     "visible-help": true,
@@ -84,7 +91,7 @@
     "resp-id": "subscribe"
   },
   "deabonnieren": {
-    "visible-dropdown": true,
+    "visible-dropdown": false,
     "visible-help": true,
     "description": "Deaktiviert tägliche Updates",
     "type": "custom",
@@ -129,6 +136,5 @@
     "description": "",
     "type": "const-text",
     "resp-id": "erdarfbleiben-text"
-
   }
 }

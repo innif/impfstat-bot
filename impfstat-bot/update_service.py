@@ -48,7 +48,7 @@ class UpdateService:
             logging.info("new Data available")
             self.last_update = self.data_handler.update_info.copy()
             util.write_json_file(self.last_update, "last-update.json")
-            msg = self.message_generator.summarize()
+            msg = self.message_generator.gen_text("numbers")
             msg = strings["auto-update-text"].format(msg)
             for chat_id in self.subscriptions.keys():
                 if "zahlen" in self.subscriptions[chat_id]:
