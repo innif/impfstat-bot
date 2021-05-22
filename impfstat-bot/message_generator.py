@@ -104,9 +104,11 @@ class MessageGenerator:
         elif "?" == message.lower():
             text = "!"
         elif "cake" in message.lower() or "kuchen" in message.lower():
-            text = "Ich verspreche dir keinen falschen Kuchen, das endet für KIs meistens schlecht. 🥔"
+            text = "The cake is a lie! 🥔"
         elif "🥔" in message.lower():
             text = "Hallo Chell, lass uns testen."
         elif "glados" in message.lower():
             text = "ich habe Kuchen :)"
+        elif "😏" in message:
+            text = "😏"
         return text
