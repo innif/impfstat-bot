@@ -15,7 +15,7 @@ def delete_plots():
 
 
 def gen_stacked_plot(content: dict, labels: list, title: str, path: str,
-                     scale_factor: float = 1., scale_label=""):
+                     scale_factor: float = 1., scale_label="", deliveries: list = None):
     x_label = strings["plot-x-label"]
     y_label = strings["plot-y-label"] + scale_label
     dates = np.array(labels, dtype='datetime64[us]')
@@ -27,7 +27,9 @@ def gen_stacked_plot(content: dict, labels: list, title: str, path: str,
     scaled_content: dict = {}
     for key in content.keys():
         scaled_content[key] = [c/scale_factor for c in content[key]]
-    ax.stackplot(dates, scaled_content.values(), labels=scaled_content.keys())
+    if deliveries is not None:
+        ax.bar(dates, [d/scale_factor for d in deliveries], 0.5, label="Lieferungen", color="gray")
+    ax.stackplot(dates, scaled_content.values(), labels=scaled_content.keys(), zorder=2)
     ax.legend(loc='upper left')
     ax.set_title(title)
     ax.set_xlabel(x_label)
@@ -103,15 +105,18 @@ class Plotter:
         self.plot_ids = {
             "daily": (strings["title-daily-plot"], (self.data_handler.doses_diff, self.data_handler.all_avg),
                       "daily-plot.png", "daily"),
-            "avg": (strings["title-avg-plot"], self.data_handler.doses_diff_avg, "avg-plot.png", "stacked"),
-            "sum": (strings["title-sum-plot"], self.data_handler.doses_total, "sum-plot.png", "stacked"),
+            "avg": (strings["title-avg-plot"], (self.data_handler.doses_diff_avg, None),
+                    "avg-plot.png", "stacked"),
+            "sum": (strings["title-sum-plot"], (self.data_handler.doses_total, self.data_handler.deliveries),
+                    "sum-plot.png", "stacked"),
             "institution": (strings["title-inst-plot"],
                             (self.data_handler.doses_by_institution_diff, self.data_handler.all_avg),
                             "inst-daily-plot.png", "daily"),
             "inst-sum": (strings["title-inst-sum-plot"],
-                         self.data_handler.doses_by_institution_total, "inst-total-plot.png", "stacked"),
+                         (self.data_handler.doses_by_institution_total, self.data_handler.deliveries),
+                         "inst-total-plot.png", "stacked"),
             "inst-avg": (strings["title-inst-avg-plot"],
-                         self.data_handler.doses_by_institution_avg, "inst-avg-plot.png", "stacked"),
+                         (self.data_handler.doses_by_institution_avg, None), "inst-avg-plot.png", "stacked"),
             "pie": (strings["title-pie-plot"], self.data_handler.proportions, "pie-plot.png", "pie")
         }
 
@@ -128,7 +133,8 @@ class Plotter:
                     path = gen_daily_plot(diff, dates, len(dates), title, path, avg=avg, scale_factor=1e6,
                                           scale_label=" (in Mio)")
                 if plot_type == "stacked":
-                    path = gen_stacked_plot(plot_data, dates, title, path, scale_factor=1e6,
+                    data, deliveries = plot_data
+                    path = gen_stacked_plot(data, dates, title, path, deliveries=deliveries, scale_factor=1e6,
                                             scale_label=" (in Mio)")
                 if plot_type == "pie":
                     path = gen_pie_chart(plot_data, title, path)
