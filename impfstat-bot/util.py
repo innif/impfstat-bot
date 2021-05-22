@@ -82,9 +82,13 @@ def get_apikey() -> str:
     conf_file = get_resource_file("api-key.json")
     conf: dict = json.load(conf_file)
     api_key: str = conf["api-key"]
-    if os.path.isfile(get_resource_file_path("debug.flag")):
+    if is_debug():
         api_key: str = conf["api-key-debug"]
     return api_key
+
+
+def is_debug() -> bool:
+    return os.path.isfile(get_resource_file_path("debug.flag"))
 
 
 def delete_folder_content(folder: str, ending: str) -> None:

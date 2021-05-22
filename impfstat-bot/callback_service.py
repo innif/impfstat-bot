@@ -107,7 +107,7 @@ class CallbackService:
         """
         if not self.__check_whitelist(update):
             return
-        plot_path = self.plot_service.gen_plot(plot_type)
+        plot_path = self.plot_service.get_plot(plot_type)
         if plot_path is not None:
             update.message.reply_photo(open(plot_path, "rb"))
         util.log_message(update)

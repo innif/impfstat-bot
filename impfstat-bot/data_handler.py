@@ -1,15 +1,12 @@
+from typing import Callable
+
 import numpy as np
 
-import util
 from data_grabber import DataGrabber
 
 
-def delete_plots():
-    util.delete_folder_content("plots", ".png")
-
-
 class DataHandler:
-    def __init__(self):
+    def __init__(self, new_data_callback: Callable = None):
         self.data_grabber = DataGrabber()
 
         self.all_sum: list = []
@@ -37,6 +34,7 @@ class DataHandler:
             "ungeimpft": 0
         }
 
+        self.new_data_callback: Callable = new_data_callback
         self.update(force_update=True)
 
     def update(self, force_update=False) -> bool:
@@ -61,7 +59,8 @@ class DataHandler:
 
         self.proportions = {"Vollständig Geimpft": full, "Teilweise Geimpft": part, "ungeimpft": none}
 
-        delete_plots()
+        if self.new_data_callback is not None:
+            self.new_data_callback()
 
     def __calc_newest_data_line(self):
         data = self.data["data"]
