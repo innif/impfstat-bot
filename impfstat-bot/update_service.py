@@ -1,7 +1,7 @@
 import logging
 import os
 
-from telegram import Update
+from telegram import Update, ParseMode
 from telegram.ext import Updater
 
 import util
@@ -55,9 +55,9 @@ class UpdateService:
             for chat_id in self.subscriptions.keys():
                 if "zahlen" in self.subscriptions[chat_id]:
                     try:
-                        updater.bot.send_message(chat_id, msg, parse_mode="markdown")
+                        updater.bot.send_message(chat_id, msg, parse_mode=ParseMode.HTML)
                         if update_notice is not None:
-                            updater.bot.send_message(chat_id, update_notice, parse_mode="markdown")
+                            updater.bot.send_message(chat_id, update_notice, parse_mode=ParseMode.HTML)
                         logging.info("sent update to {}".format(chat_id))
                     except Exception as e:
                         logging.error(e)

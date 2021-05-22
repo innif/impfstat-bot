@@ -1,3 +1,5 @@
+import numpy as np
+
 import util
 from data_grabber import DataGrabber
 
@@ -22,6 +24,8 @@ class DataHandler:
         self.doses_diff: dict = {}
         self.doses_diff_avg: dict = {}
 
+        self.deliveries: list = []
+
         self.data = self.data_grabber.data
         self.data_len = self.data_grabber.data_len
         self.update_info = self.data_grabber.update_info
@@ -44,11 +48,12 @@ class DataHandler:
         self.data_len = self.data_grabber.data_len
         self.update_info = self.data_grabber.update_info
 
+        self.dates = self.data["data"]["date"]
+
         self.__calc_newest_data_line()
         self.__calc_doses_total()
         self.__calc_doses_by_institution()
-
-        self.dates = self.data["data"]["date"]
+        self.__calc_deliveries()
 
         full = float(self.newest_data_line["impf_quote_voll"])
         part = float(self.newest_data_line["impf_quote_erst"]) - full
@@ -100,3 +105,13 @@ class DataHandler:
             diff[key] += [total[key][i] - total[key][i - 1] for i in range(1, data_len)]
             avg[key] = [sum(diff[key][i - avg_span:i]) / avg_span for i in range(data_len)]
         return diff, avg
+
+    def __calc_deliveries(self):
+        data = self.data_grabber.data["deliveries"]
+        dates = np.array(self.dates, dtype='datetime64[us]')
+        dates_deliveries = np.array(data["date"], dtype='datetime64[us]')
+        self.deliveries = [0]*len(dates)
+        for date, amount in zip(dates_deliveries, data["dosen"]):
+            for i, date_target in enumerate(dates):
+                if date_target >= date:
+                    self.deliveries[i] += int(amount)

@@ -1,2 +1,5 @@
-*Tipp:*
+<b>Neuerungen:</b>
+In den Summen-Diagrammen (/einrichtung_summiert und /dosen_summiert) sind jetzt auch die Lieferungen eingetragen. So kann man jetzt sehen, wie viele Impfdosen aktuell unverimpft lagern.
+Es gibt seit gestern auch ein paar neue Easter-Eggs. :)
+<b>Tipp:</b>
 Du kannst den Bot auch als Nutzer einer Gruppe hinzufügen, dann kannst du den Bot auch in der Gruppe z.B. mit /zahlen@impfstat_bot verwenden.

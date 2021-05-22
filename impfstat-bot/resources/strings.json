@@ -9,7 +9,7 @@
   "success-sub-text":"\uD83D\uDD14\nDu hast erfolgreich das tägliche Update abonniert. Du wirst nun immer informiert, wenn neue Zahlen zur Verfügung stehen. Wenn du den Bot wieder deabonnieren willst, tippe auf /deabonnieren.",
   "already-unsub-text":"\uD83D\uDEAB\nDu hast dieses Update bereits deabonniert. Wenn du den Bot wieder abonnieren willst, tippe auf /abonnieren.",
   "success-unsub-text":"\uD83D\uDD15\nDu hast dieses Update erfolgreich deabonniert. Wenn du den Bot wieder abonnieren willst, tippe auf /abonnieren.",
-  "auto-update-text":"\uD83D\uDD14 Es gibt neue Daten:\n{}\nDies ist ein automatisches Update. Um automatische Updates auszuschalten, schreibe /deabonnieren.",
+  "auto-update-text":"\uD83D\uDD14\nEs gibt neue Daten:\n{}\nDies ist ein automatisches Update. Um automatische Updates auszuschalten, schreibe /deabonnieren.",
   "datenschutz-text": "Hallo! Dieser Bot sammelt persönliche Daten (z.B. chat_id, Benutzername, Name). Um den Bot zu verwenden, musst du der Speicherung deiner Daten gemäß der /datenschutzerklaerung mit /akzeptieren zustimmen. Für Rückfragen: impfstatbot@finn-harms.de",
   "feuern-text":"Pah! Du kriegst ab jetzt als letztes die täglichen Updates. 😠",
   "erdarfbleiben-text":"Aww, wie lieb von dir. 🤗",
