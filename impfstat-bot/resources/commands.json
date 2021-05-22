@@ -1,147 +1,178 @@
 {
-  "zahlen": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Gibt eine Übersicht der wesentlichen Kennzahlen aus.",
-    "type": "text",
-    "resp-id": "numbers"
+  "command_list": {
+    "zahlen": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Gibt eine Übersicht der wesentlichen Kennzahlen aus.",
+      "type": "text",
+      "resp-id": "numbers",
+      "category": "text"
+    },
+    "prognose": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Gibt an, wie lange es bei dem Aktuellen Impftempo bräuchte, 70% der Bevölkerung zu impfen.",
+      "type": "text",
+      "resp-id": "prognosis",
+      "category": "text"
+    },
+    "7_tage_mittel": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit einem 7-Tage Mittelwert.",
+      "type": "plot",
+      "resp-id": "avg",
+      "category": "plot"
+    },
+    "dosen_taeglich": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert eine Grafik der täglich verimpften Dosen.",
+      "type": "plot",
+      "resp-id": "daily",
+      "category": "plot"
+    },
+    "dosen_summiert": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert eine Grafik der insgesamt verimpften Dosen",
+      "type": "plot",
+      "resp-id": "sum",
+      "category": "plot"
+    },
+    "einrichtung": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert eine Grafik der täglich verimpften Dosen nach Einrichtung.",
+      "type": "plot",
+      "resp-id": "institution",
+      "category": "plot"
+    },
+    "einrichtung_summiert": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert eine Grafik der summierten verimpften Dosen nach Einrichtung.",
+      "type": "plot",
+      "resp-id": "inst-sum",
+      "category": "plot"
+    },
+    "einrichtung_mittel": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit 7-Tage Mittelwert nach Einrichtung.",
+      "type": "plot",
+      "resp-id": "inst-avg",
+      "category": "plot"
+    },
+    "torte": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Liefert ein Tortendiagramm des Impffortschritts.",
+      "type": "plot",
+      "resp-id": "pie",
+      "category": "plot"
+    },
+    "info": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Informationen über Datenquelle und Sourcecode",
+      "type": "const-text",
+      "resp-id": "info-text",
+      "category": "info"
+    },
+    "feedback": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Beginnend mit /feedback kannst du Feedback, Fehlermeldungen, Fragen oder Verbesserungswünsche an meinen Entwickler senden.",
+      "type": "custom",
+      "resp-id": "feedback",
+      "category": "info"
+    },
+    "help": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Übersicht aller Befehle",
+      "type": "text",
+      "resp-id": "help",
+      "category": "info"
+    },
+    "abonnieren": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Aktiviert tägliche Updates",
+      "type": "custom",
+      "resp-id": "subscribe",
+      "category": "update"
+    },
+    "deabonnieren": {
+      "visible-dropdown": true,
+      "visible-help": true,
+      "description": "Deaktiviert tägliche Updates",
+      "type": "custom",
+      "resp-id": "unsubscribe",
+      "category": "update"
+    },
+    "datenschutzerklaerung": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "Zeigt dir die Datenschutzerklärung dieses Bots an",
+      "type": "custom",
+      "resp-id": "privacy-notice",
+      "category": "info"
+    },
+    "start": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "Startet den Bot.",
+      "type": "custom",
+      "resp-id": "start"},
+    "akzeptieren": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "Zeigt die Datenschutzerklärung an.",
+      "type": "custom",
+      "resp-id": "accept"},
+    "feuern": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "",
+      "type": "const-text",
+      "resp-id": "feuern-text"
+    },
+    "respond": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "",
+      "type": "custom",
+      "resp-id": "respond"
+    },
+    "erdarfbleiben": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "",
+      "type": "const-text",
+      "resp-id": "erdarfbleiben-text"
+    },
+    "corona": {
+      "visible-dropdown": false,
+      "visible-help": false,
+      "description": "",
+      "type": "const-text",
+      "resp-id": "corona-response"
+    }
   },
-  "prognose": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Gibt an, wie lange es bei dem Aktuellen Impftempo bräuchte, 70% der Bevölkerung zu impfen.",
-    "type": "text",
-    "resp-id": "prognosis"
-  },
-  "7_tage_mittel": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit einem 7-Tage Mittelwert.",
-    "type": "plot",
-    "resp-id": "avg"
-  },
-  "dosen_taeglich": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert eine Grafik der täglich verimpften Dosen.",
-    "type": "plot",
-    "resp-id": "daily"
-  },
-  "dosen_summiert": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert eine Grafik der insgesamt verimpften Dosen",
-    "type": "plot",
-    "resp-id": "sum"
-  },
-  "einrichtung": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert eine Grafik der täglich verimpften Dosen nach Einrichtung.",
-    "type": "plot",
-    "resp-id": "institution"
-  },
-  "einrichtung_summiert": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert eine Grafik der summierten verimpften Dosen nach Einrichtung.",
-    "type": "plot",
-    "resp-id": "inst-sum"
-  },
-  "einrichtung_mittel": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit 7-Tage Mittelwert nach Einrichtung.",
-    "type": "plot",
-    "resp-id": "inst-avg"
-  },
-  "torte": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Liefert ein Tortendiagramm des Impffortschritts.",
-    "type": "plot",
-    "resp-id": "pie"
-  },
-  "info": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Informationen über Datenquelle und Sourcecode",
-    "type": "const-text",
-    "resp-id": "info-text"
-  },
-  "feedback": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Beginnend mit /feedback kannst du Feedback, Fehlermeldungen, Fragen oder Verbesserungswünsche an meinen Entwickler senden.",
-    "type": "custom",
-    "resp-id": "feedback"
-  },
-  "help": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Übersicht aller Befehle",
-    "type": "text",
-    "resp-id": "help"
-  },
-  "abonnieren": {
-    "visible-dropdown": true,
-    "visible-help": true,
-    "description": "Aktiviert tägliche Updates",
-    "type": "custom",
-    "resp-id": "subscribe"
-  },
-  "deabonnieren": {
-    "visible-dropdown": false,
-    "visible-help": true,
-    "description": "Deaktiviert tägliche Updates",
-    "type": "custom",
-    "resp-id": "unsubscribe"
-  },
-  "datenschutzerklaerung": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "Zeigt dir die Datenschutzerklärung dieses Bots an",
-    "type": "custom",
-    "resp-id": "privacy-notice"
-  },
-  "start": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "Startet den Bot.",
-    "type": "custom",
-    "resp-id": "start"},
-  "akzeptieren": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "Zeigt die Datenschutzerklärung an.",
-    "type": "custom",
-    "resp-id": "accept"},
-  "cake": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "Ist der Kuchen eine Lüge?",
-    "type": "const-text",
-    "resp-id": "cake-response-text"
-  },
-  "feuern": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "",
-    "type": "const-text",
-    "resp-id": "feuern-text"
-  },
-  "respond": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "",
-    "type": "custom",
-    "resp-id": "respond"
-  },
-  "erdarfbleiben": {
-    "visible-dropdown": false,
-    "visible-help": false,
-    "description": "",
-    "type": "const-text",
-    "resp-id": "erdarfbleiben-text"
+  "categories": {
+    "text": {
+      "help-title": "\uD83D\uDCDC <u>Text</u>"
+    },
+    "plot": {
+      "help-title": "\uD83D\uDCC8 <u>Diagramme</u>"
+    },
+    "info": {
+      "help-title": "❓ <u>Informationen und Hilfe</u>"
+    },
+    "update": {
+      "help-title": "\uD83D\uDD14 <u>Tägliche Updates</u>"
+    }
   }
 }

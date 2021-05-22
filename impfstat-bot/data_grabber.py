@@ -7,12 +7,12 @@ import requests
 from requests import Response
 
 import util
+from resources import conf
 
 
 class DataGrabber:
     def __init__(self):
-        self.conf: dict = util.read_json_file()
-        self.sources: dict = self.conf["source"]
+        self.sources: dict = conf["source"]
         self.last_update: int = 0
         self.data: dict = {}
         self.data_len = {}
@@ -26,7 +26,7 @@ class DataGrabber:
         self.update(force_update=True)
 
     def update(self, force_update=False) -> bool:
-        if not force_update and time.time() - self.last_update < (self.conf["update-frequency"] * 60):
+        if not force_update and time.time() - self.last_update < (conf["update-frequency"] * 60):
             return False  # letztes Update weniger als 10min her
         if self.__get_vaccination_data():
             self.last_update = time.time()
@@ -34,7 +34,7 @@ class DataGrabber:
         return False
 
     def __get_vaccination_data(self) -> bool:
-        update_info_resp: Response = self.__download_file(self.conf["data-update-info-url"])
+        update_info_resp: Response = self.__download_file(conf["data-update-info-url"])
         if update_info_resp.status_code != 200:
             logging.warning("Error {} while downloading file".format(update_info_resp.status_code))
             return False
@@ -56,7 +56,7 @@ class DataGrabber:
             logging.warning(e)
             return False
 
-        path = util.get_resource_file_path(self.conf["data-update-info-filename"], "data")
+        path = util.get_resource_file_path(conf["data-update-info-filename"], "data")
         with open(path, 'wb') as output_file:
             output_file.write(update_info_resp.content)
 

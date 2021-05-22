@@ -1,16 +1,13 @@
 import logging
-from random import random
 
-from telegram import Update
+from telegram import Update, ParseMode
 from telegram.ext import CallbackContext, Updater
 
 import util
 from message_generator import MessageGenerator
 from plotter import Plotter
+from resources import strings, api_key
 from update_service import UpdateService
-
-strings = util.read_json_file("strings.json")  # Strings einlesen
-api_key = util.read_json_file("api-key.json")
 
 
 class CallbackService:
@@ -46,7 +43,10 @@ class CallbackService:
         if text_id not in strings.keys():
             logging.error("{} is not in strings.json".format(text_id))
             return
-        update.message.reply_text(strings[text_id], parse_mode="markdown")
+        try:
+            update.message.reply_text(strings[text_id], parse_mode=ParseMode.HTML)
+        except Exception as e:
+            logging.error("Error in __send_const: {}".format(str(e)))
         util.log_message(update)
 
     def __get_custom_callback(self, resp_id: str):
@@ -77,12 +77,13 @@ class CallbackService:
         :param update: Nachrichtenupdate
         :param context: Nachrichtencontext
         """
-        logging.warning("An error occured: {}".format(update))
+
+        logging.warning("An error occured: {}, update: {}".format(context.error, update))
 
     def unknown_command(self, update: Update, context: CallbackContext):
         """Callback Methode unbekannte Kommandos"""
-        text = self.message_service.unknown_command()
-        self.__send_text(update, context, text)
+        text = self.message_service.unknown_command(update.message.text)
+        self.__send_text(update, context, text, parse_mode=ParseMode.HTML)
 
     def __check_whitelist(self, update: Update):
         """
@@ -121,13 +122,13 @@ class CallbackService:
         if not self.__check_whitelist(update):
             return
         parse_mode, text = self.message_service.gen_text(text_id)
-        if parse_mode != "":
+        try:
             update.message.reply_text(text, parse_mode=parse_mode)
-        else:
-            update.message.reply_text(text)
+        except Exception as e:
+            logging.error("Error in __send_text_id: {}".format(str(e)))
         util.log_message(update)
 
-    def __send_text(self, update: Update, context: CallbackContext, text, parse_mode="") -> None:
+    def __send_text(self, update: Update, context: CallbackContext, text, parse_mode=None) -> None:
         """
         Sendet einen Text als Antwort auf eine Nachricht.
         :param update: Nachrichtenupdate
@@ -136,10 +137,10 @@ class CallbackService:
         """
         if not self.__check_whitelist(update):
             return
-        if parse_mode != "":
-            update.message.reply_text(text, parse_mode=parse_mode)
-        else:
-            update.message.reply_text(text)
+        try:
+            update.message.reply_text(text, parse_mode=parse_mode, disable_web_page_preview=True)
+        except Exception as e:
+            logging.error("Error in __send_text_id: {}".format(str(e)))
         util.log_message(update)
 
     def __start(self, update: Update, context: CallbackContext):
@@ -179,16 +180,17 @@ class CallbackService:
             message_text = strings["feedback-admin-text"].format(username=str(update.message.chat.username),
                                                                  feedback=feedback_text,
                                                                  user_id=str(update.message.chat.id))
-            self.updater.bot.send_message(api_key["admin-id"], message_text)
+            self.updater.bot.send_message(api_key["admin-id"], message_text, parse_mode=ParseMode.HTML)
 
             repl = strings["feedback-text"]
         else:
             repl = strings["feedback-short-text"]
-        self.__send_text(update, context, repl)
+        self.__send_text(update, context, repl, parse_mode=ParseMode.HTML)
 
-    def __privacy(self, update: Update, context: CallbackContext):
-        text = util.file_to_string("privacy.md")
-        update.message.reply_text(text, parse_mode="markdown")
+    @staticmethod
+    def __privacy(update: Update, context: CallbackContext):
+        text = util.file_to_string("privacy.html")
+        update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
     def __respond(self, update: Update, context: CallbackContext):
         if str(update.message.chat.id) == api_key["admin-id"]:

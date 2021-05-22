@@ -9,6 +9,7 @@ from callback_service import CallbackService
 from data_handler import DataHandler
 from message_generator import MessageGenerator
 from plotter import Plotter
+from resources import conf, commands
 from update_service import UpdateService
 
 # Logging-Format einstellen
@@ -21,10 +22,6 @@ harry_plotter = Plotter(data_handler)  # der Auserwählte. Nur er kann plotten
 mail_man = MessageGenerator(data_handler)  # der mail_man generiert die Textnachrichten
 update_service = UpdateService(data_handler, mail_man)  # service für die täglichen Updates
 callback_service = CallbackService(mail_man, harry_plotter, update_service)
-
-strings = util.read_json_file("strings.json")  # Strings einlesen
-conf = util.read_json_file("config.json")  # config einlesen
-commands = util.read_json_file("commands.json")  # config einlesen
 
 
 def update_service_call():
@@ -46,8 +43,6 @@ for key in commands.keys():
     updater.dispatcher.add_handler(CommandHandler(key, callback))
     if command["visible-dropdown"]:
         dropdown_commands.append((key, command["description"]))
-    if command["visible-help"]:
-        mail_man.available_commands.append((key, command["description"]))
 
 updater.dispatcher.add_handler(MessageHandler(Filters.text, callback_service.unknown_command))
 updater.dispatcher.add_error_handler(callback_service.error_handler)
