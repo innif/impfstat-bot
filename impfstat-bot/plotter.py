@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -8,16 +7,14 @@ import numpy as np
 
 import util
 from data_handler import DataHandler
-
-conf = util.read_json_file()
-strings = util.read_json_file("strings.json")
+from resources import strings, conf
 
 
 def delete_plots():
     util.delete_folder_content("plots", ".png")
 
 
-def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str,
+def gen_stacked_plot(content: dict, labels: list, title: str, path: str,
                      scale_factor: float = 1., scale_label=""):
     x_label = strings["plot-x-label"]
     y_label = strings["plot-y-label"] + scale_label
@@ -46,7 +43,7 @@ def gen_stacked_plot(content: dict, labels: list, n_samples, n_labels, title: st
     return path
 
 
-def gen_daily_plot(content: dict, labels: list, n_samples, n_labels, title: str, path: str, avg: list = None,
+def gen_daily_plot(content: dict, labels: list, n_samples, title: str, path: str, avg: list = None,
                    scale_factor: float = 1., scale_label=""):
     x_label = strings["plot-x-label"]
     y_label = strings["plot-y-label"]+scale_label
@@ -89,8 +86,8 @@ def gen_pie_chart(content: dict, title: str, path: str):
     ax.set_title(title)
     ax.pie(sizes, labels=content.keys(), autopct='%1.1f%%', startangle=90, counterclock=False, explode=(0, 0, .05))
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    fig.text(1.1, -0.1, strings["watermark"], transform=ax.transAxes,
-            fontsize=10, color='gray', alpha=0.4, horizontalalignment='right')
+    fig.text(1.1, -0.1, strings["watermark"], transform=ax.transAxes, fontsize=10, color='gray', alpha=0.4,
+             horizontalalignment='right')
 
     fig.savefig(path, format="png", dpi=conf["dpi"])
     return path
@@ -104,11 +101,13 @@ class Plotter:
 
     def __get_data(self):
         self.plot_ids = {
-            "daily": (strings["title-daily-plot"], (self.data_handler.doses_diff, self.data_handler.all_avg), "daily-plot.png", "daily"),
+            "daily": (strings["title-daily-plot"], (self.data_handler.doses_diff, self.data_handler.all_avg),
+                      "daily-plot.png", "daily"),
             "avg": (strings["title-avg-plot"], self.data_handler.doses_diff_avg, "avg-plot.png", "stacked"),
             "sum": (strings["title-sum-plot"], self.data_handler.doses_total, "sum-plot.png", "stacked"),
             "institution": (strings["title-inst-plot"],
-                            (self.data_handler.doses_by_institution_diff, self.data_handler.all_avg), "inst-daily-plot.png", "daily"),
+                            (self.data_handler.doses_by_institution_diff, self.data_handler.all_avg),
+                            "inst-daily-plot.png", "daily"),
             "inst-sum": (strings["title-inst-sum-plot"],
                          self.data_handler.doses_by_institution_total, "inst-total-plot.png", "stacked"),
             "inst-avg": (strings["title-inst-avg-plot"],
@@ -126,9 +125,11 @@ class Plotter:
                 dates = self.data_handler.dates
                 if plot_type == "daily":
                     diff, avg = plot_data
-                    path = gen_daily_plot(diff, dates, len(dates), 10, title, path, avg=avg, scale_factor=1e6, scale_label=" (in Mio)")
+                    path = gen_daily_plot(diff, dates, len(dates), title, path, avg=avg, scale_factor=1e6,
+                                          scale_label=" (in Mio)")
                 if plot_type == "stacked":
-                    path = gen_stacked_plot(plot_data, dates, len(dates), 10, title, path, scale_factor=1e6, scale_label=" (in Mio)")
+                    path = gen_stacked_plot(plot_data, dates, title, path, scale_factor=1e6,
+                                            scale_label=" (in Mio)")
                 if plot_type == "pie":
                     path = gen_pie_chart(plot_data, title, path)
             return path

@@ -10,8 +10,6 @@ class DataHandler:
     def __init__(self):
         self.data_grabber = DataGrabber()
 
-        self.conf = util.read_json_file()
-
         self.all_sum: list = []
         self.all_diff: list = []
         self.all_avg: list = []

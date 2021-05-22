@@ -7,8 +7,7 @@ from telegram.ext import Updater
 import util
 from data_handler import DataHandler
 from message_generator import MessageGenerator
-
-strings = util.read_json_file("strings.json")
+from resources import strings
 
 
 class UpdateService:

@@ -21,9 +21,11 @@ def get_resource_file(name: str, folder: str = "resources", mode: str = "r"):
 
 
 def log_message(update: Update):
+    text = update.message.text.encode('ascii', 'ignore').decode('ascii')  # remove emoticons
+    eff_msg = str(update.effective_message).encode('ascii', 'ignore').decode('ascii')
     logging.info("MSG: {} {} ### MESSAGE:{}".format(
-        update.message.date, update.message.text,
-        update.effective_message))
+        update.message.date, text,
+        eff_msg))
 
 
 def date(x: str) -> str:
@@ -73,7 +75,7 @@ def write_json_file(content, name: str = "config.json", folder: str = "resources
         conf_file.close()
     except Exception as e:
         logging.error(e)
-        return {}
+        return
 
 
 def get_apikey() -> str:
