@@ -10,10 +10,6 @@ from data_handler import DataHandler
 from resources import strings, conf
 
 
-def delete_plots():
-    util.delete_folder_content("plots", ".png")
-
-
 def gen_stacked_plot(content: dict, labels: list, title: str, path: str,
                      scale_factor: float = 1., scale_label="", deliveries: list = None):
     x_label = strings["plot-x-label"]
@@ -120,7 +116,8 @@ class Plotter:
             "pie": (strings["title-pie-plot"], self.data_handler.proportions, "pie-plot.png", "pie")
         }
 
-    def gen_plot(self, plot_id: str):
+    def get_plot(self, plot_id: str):
+        logging.info("generating plot {}".format(plot_id))
         try:
             title, plot_data, filename, plot_type = self.plot_ids[plot_id]
             path = util.get_resource_file_path(filename, "plots")
@@ -142,3 +139,12 @@ class Plotter:
         except Exception as e:
             logging.error(e)
             return None
+
+    @staticmethod
+    def delete_plots():
+        util.delete_folder_content("plots", ".png")
+
+    def render_all(self):
+        for plot_id in self.plot_ids.keys():
+            self.get_plot(plot_id)
+
