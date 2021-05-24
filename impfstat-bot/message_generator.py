@@ -85,6 +85,8 @@ class MessageGenerator:
         # EasterEggs
         if "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️" in message:
             text = "Adminzugang freigeschaltet"
+        elif message.lower().startswith("echo"):
+            text = message
         elif "🦠" in message:
             text = "Hilfe, ein Coronavirus! Firewall wird eingeschaltet."
         elif "💉" in message:
@@ -93,7 +95,7 @@ class MessageGenerator:
             text = "Es tut mir leid, ich fürchte, dass ich das nicht tun kann."
         elif "easteregg" in message.lower() or "easter egg" in message.lower():
             text = '<a href="https://bit.ly/3vaaXm3">nicht klicken!</a>'
-        elif "moin" in message.lower() or "hallo" in message.lower() or "hi" in message.lower():
+        elif "moin" in message.lower() or "hallo" in message.lower() or "hello" in message.lower():
             text = "Moin, wie geht`s?"
         elif "test" == message.lower():
             text = "Und, habe ich den Test bestanden?"
@@ -109,6 +111,10 @@ class MessageGenerator:
             text = "Hallo Chell, lass uns testen."
         elif "glados" in message.lower():
             text = "ich habe Kuchen :)"
+        elif "why" in message.lower() or "warum" in message.lower():
+            text = "why not"
+        elif "ups" in message.lower():
+            text = "kann ja mal passieren"
         elif "😏" in message:
             text = "😏"
         return text
