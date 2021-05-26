@@ -35,7 +35,7 @@ def update_service_call():
     try:
         update_service.update(updater)
     except Exception as e:
-        logging.error("error in update_Service_call: {}".format(str(e)))
+        logging.warning("error in update_Service_call: {}".format(str(e)))
     threading.Timer(conf["update-service-frequency"] * 60, update_service_call).start()
 
 
