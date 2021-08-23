@@ -1,3 +1,3 @@
 CALL .\backup-pi-data.cmd
-ssh pi@raspberrypi cd ~/impfstat-bot;git pull;sudo reboot now
+ssh pi@RP3 cd ~/impfstat-bot;git pull;sudo reboot now
 pause

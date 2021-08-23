@@ -7,5 +7,5 @@ set TM=%TM: =0%
 set BOT-BACKUP-PATH=%date%-%TM%
 echo Path: %BOT-BACKUP-PATH%
 mkdir "pi-backup/%BOT-BACKUP-PATH%"
-scp -r pi@raspberrypi:~/impfstat-bot/impfstat-bot pi-backup/%BOT-BACKUP-PATH%
+scp -r pi@RP3:~/impfstat-bot/impfstat-bot pi-backup/%BOT-BACKUP-PATH%
 echo finished Backup
