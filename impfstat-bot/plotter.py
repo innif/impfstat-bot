@@ -117,11 +117,11 @@ class Plotter:
         }
 
     def get_plot(self, plot_id: str):
-        logging.info("generating plot {}".format(plot_id))
         try:
             title, plot_data, filename, plot_type = self.plot_ids[plot_id]
             path = util.get_resource_file_path(filename, "plots")
             if not os.path.exists(path):
+                logging.info("generating plot {}".format(plot_id))
                 self.data_handler.update()
                 self.__get_data()
                 dates = self.data_handler.dates

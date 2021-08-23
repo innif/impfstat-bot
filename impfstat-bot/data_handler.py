@@ -74,10 +74,14 @@ class DataHandler:
         data_len = self.data_len["data"]
         self.doses_total = {
             'biontech': [int(s) for s in data['dosen_biontech_kumulativ']],
-            'astrazeneca': [int(s) for s in data['dosen_astrazeneca_kumulativ']],
+            'astrazeneca': [],
             'moderna': [int(s) for s in data['dosen_moderna_kumulativ']],
             'johnson': [int(s) for s in data['dosen_johnson_kumulativ']],
         }
+        try:
+            self.doses_total['astrazeneca'] = [int(s) for s in data['dosen_astrazeneca_kumulativ']]
+        except KeyError:
+            self.doses_total['astrazeneca'] = [int(s) for s in data['dosen_astra_kumulativ']]
         doses = {'all': [int(s) for s in data['dosen_kumulativ']]}
         self.doses_diff, self.doses_diff_avg = self.__calc_div_avg(self.doses_total, data_len)
         all_diff, all_avg = self.__calc_div_avg(doses, data_len)
