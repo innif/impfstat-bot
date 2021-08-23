@@ -45,7 +45,7 @@ class UpdateService:
     def update(self, updater: Updater):
         logging.info("update-service update")
         self.data_handler.update()
-        if self.last_update["vaccinationsLastUpdated"] != self.data_handler.update_info["vaccinationsLastUpdated"]:
+        if self.last_update["vaccinationsLastUpdated"].split()[0] != self.data_handler.update_info["vaccinationsLastUpdated"].split()[0]:
             logging.info("new Data available")
             self.last_update = self.data_handler.update_info.copy()
             util.write_json_file(self.last_update, "last-update.json")
