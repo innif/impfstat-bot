@@ -41,24 +41,24 @@
       "category": "plot"
     },
     "einrichtung": {
-      "visible-dropdown": true,
-      "visible-help": true,
+      "visible-dropdown": false,
+      "visible-help": false,
       "description": "Liefert eine Grafik der täglich verimpften Dosen nach Einrichtung.",
       "type": "plot",
       "resp-id": "institution",
       "category": "plot"
     },
     "einrichtung_summiert": {
-      "visible-dropdown": true,
-      "visible-help": true,
+      "visible-dropdown": false,
+      "visible-help": false,
       "description": "Liefert eine Grafik der summierten verimpften Dosen nach Einrichtung.",
       "type": "plot",
       "resp-id": "inst-sum",
       "category": "plot"
     },
     "einrichtung_mittel": {
-      "visible-dropdown": true,
-      "visible-help": true,
+      "visible-dropdown": false,
+      "visible-help": false,
       "description": "Liefert eine Grafik der täglich verabreichten Impfdosen mit 7-Tage Mittelwert nach Einrichtung.",
       "type": "plot",
       "resp-id": "inst-avg",
