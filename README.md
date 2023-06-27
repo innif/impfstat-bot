@@ -1,4 +1,7 @@
 # Impfstatistik Telegram Bot (@impfstat_bot)
+
+** Da die COImpfkampagne ihre Relevanz verloren hat, ist dieser Bot nicht mehr aktiv. **
+
 Das ist ein kleiner Telegram-bot, der Dich über die aktuellen Impfstatistiken informiert.
 
 [t.me/impfstat_bot](https://t.me/impfstat_bot)
